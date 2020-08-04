@@ -124,13 +124,11 @@ contract Redeem {
     address lp;
     for(uint i = 0; i < _liquidityProviders.length; i += 1) {
       lp = _liquidityProviders[i];
-      // record their balance for the week
       pendingBalances[lp] = _balances[i];
-      usersWithPendingBalances.push(lp);
-      //weeksWithBenefits[_liquidityProviders[i]].push(_week);
 
-      emit Allocated(_liquidityProviders[i], _week, _balances[i]);
+      emit Allocated(lp, _week, _balances[i]);
     }
+    usersWithPendingBalances = _liquidityProviders;
   }
 
   function seedAllocation(uint _week, address _liquidityProvider, uint _bal) external
