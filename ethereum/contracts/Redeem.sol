@@ -1,7 +1,6 @@
 pragma solidity 0.6.0;
 
 import "./IERC20.sol";
-//contract Redeem is AbstractRedeem {
 
 contract Redeem {
 
@@ -19,8 +18,6 @@ contract Redeem {
   uint latestWeekTimestamp;
   bytes32 latestWeekBlockHash;
 
-  // balances by [week][address]
-  //mapping(uint => mapping(address => uint)) balances;
   mapping(address => uint) vestedBalances;
   mapping(address => uint) pendingBalances;
   address[] usersWithPendingBalances;
