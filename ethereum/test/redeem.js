@@ -28,7 +28,18 @@ contract("Redeem", accounts => {
   // these are deterministic because accounts are deterministic for the ganache mnemonic
   const endingBlockHash =
     "0x76e2419510611ed9dceb203644e997aae76fb195d6420f8bee64368b14303312";
-  const expectedDays = [4, 4, 5, 1, 1, 4, 4, 5, 5, 3];
+  const expectedOffsetSeconds = [
+    581200,
+    171952,
+    63845,
+    503077,
+    284922,
+    44468,
+    25715,
+    559291,
+    98173,
+    588157
+  ];
 
   beforeEach(async () => {
     tbal = await TToken.new("Test Bal", "TBAL", 18);
@@ -40,12 +51,15 @@ contract("Redeem", accounts => {
     await tbal.transfer(REDEEM, utils.toWei("20000"));
   });
 
-  it("correctly generates days of the week", async () => {
-    let day;
+  it("correctly generates offsets for each user", async () => {
+    let offsetSeconds;
 
     for (var i = 0; i < 10; i++) {
-      day = await redeem.calculateDay(accounts[i], endingBlockHash);
-      assert(day == expectedDays[i], "day should be " + expectedDays[i]);
+      offsetSeconds = await redeem.userWeekOffset(accounts[i], endingBlockHash);
+      assert(
+        offsetSeconds == expectedOffsetSeconds[i],
+        "offset should be " + expectedOffsetSeconds[i] + " seconds"
+      );
     }
   });
 
@@ -114,7 +128,7 @@ contract("Redeem", accounts => {
       assert(result == utils.toWei("1000"), "user should have an allocation");
     });
 
-    it("Allows the user to claimWeek once the days have passed", async () => {
+    it("Allows the user to claimWeek once time has passed", async () => {
       await increaseTime(5); // needs to be 1 days minimum
       await redeem.claimWeek(1, { from: accounts[1] });
 

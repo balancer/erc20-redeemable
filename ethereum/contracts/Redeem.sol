@@ -59,9 +59,9 @@ contract Redeem {
   function offsetRequirementMet(address user, uint _week) view public returns (bool){
       bytes32 blockHash = weekBlockHashes[_week];
       uint timestamp = weekTimestamps[_week];
-      uint offsetDays = calculateDay(user, blockHash);
+      uint offsetSeconds = userWeekOffset(user, blockHash);
 
-      uint earliestClaimableTimestamp = timestamp + (offsetDays * 1 days);
+      uint earliestClaimableTimestamp = timestamp + (offsetSeconds);
       return earliestClaimableTimestamp < block.timestamp;
   }
 
@@ -117,18 +117,18 @@ contract Redeem {
     }
   }
 
-  function calculateDay(address _liquidityProvider, bytes32 _weekBlockHash) pure public returns (uint) {
+  function userWeekOffset(address _liquidityProvider, bytes32 _weekBlockHash) pure public returns (uint offset) {
     bytes32 hash = keccak256(abi.encodePacked(_liquidityProvider, _weekBlockHash));
-    uint day;
     assembly {
-      day :=
+      offset :=
         mod(
           hash,
-          7
+          604800 // seconds in a week
         )
     }
-    return day;
+    return offset;
   }
+
 
   function finishWeek(uint _week, uint _timestamp, bytes32 _blockHash) public
   onlyOwner
