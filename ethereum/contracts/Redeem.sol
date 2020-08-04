@@ -1,17 +1,18 @@
 pragma solidity 0.6.0;
 
-//import "./AbstractRedeem.sol";
+import "./IERC20.sol";
 //contract Redeem is AbstractRedeem {
 
 contract Redeem {
-  event Allocated(address _claimant, uint256 _balance);
+
+  IERC20 public token;
+
+  event Allocated(address _claimant, uint256 _week, uint256 _balance);
   event Claimed(address _claimant, uint256 _balance);
 
 
   // the outstanding balances for each user (by week)
-  // ie if the contract was deployed on a Tuesday, and 3 weeks pass without them cashing out
-  // [Thursday, Tuesday, Saturnday] == [2, 7, 18]
-  mapping(address => uint[]) weeksWithBenefits;
+  mapping(address => uint[]) public weeksWithBenefits;
   
   // Recorded weeks
   uint latestWeek;
@@ -20,7 +21,13 @@ contract Redeem {
 
   // balances by [week][address]
   mapping(uint => mapping(address => uint)) balances;
- 
+
+  constructor(
+    address _token
+  ) public {
+    token = IERC20(_token);
+  }
+
   modifier requireWeekInPast(uint week) {
     require(week <= latestWeek, "Week cannot be in the future");
     _;
@@ -32,13 +39,12 @@ contract Redeem {
     _;
   }
 
-  function disburse(address _liquidityProvider, uint _week) private {
-    uint bal = balances[_week][_liquidityProvider];
-    // bail out if allocation doesn't exist - ie from single week disbursement
-    if (bal > 0) {
-      //token.transfer(msg.sender, allocation.balance)
-      emit Claimed(msg.sender, bal);
-      delete balances[_week][_liquidityProvider];
+  function disburse(address _liquidityProvider, uint _balance) private {
+    if (_balance > 0) {
+      token.transfer(_liquidityProvider, _balance);
+      emit Claimed(_liquidityProvider, _balance);
+    } else {
+      revert('No balance would be transfered');
     }
   }
 
@@ -65,6 +71,7 @@ contract Redeem {
     }
     uint bal = balances[_week][msg.sender];
     disburse(msg.sender, bal);
+    delete balances[_week][msg.sender];
   }
 
 
@@ -92,6 +99,7 @@ contract Redeem {
     for(uint i = 0; i < numClaimableWeeks; i++) {
       uint week = weeksWithBenefits[msg.sender][i];
       totalBalance += balances[week][msg.sender];
+      delete balances[week][msg.sender];
     }
     disburse(msg.sender, totalBalance);
 
@@ -138,7 +146,7 @@ contract Redeem {
       balances[_week][_liquidityProviders[i]] = _balances[i];
       weeksWithBenefits[_liquidityProviders[i]].push(_week);
 
-      emit Allocated(_liquidityProviders[i], _balances[i]);
+      emit Allocated(_liquidityProviders[i], _week, _balances[i]);
     }
   }
 
@@ -148,7 +156,7 @@ contract Redeem {
     balances[_week][_liquidityProvider] = _bal;
     weeksWithBenefits[_liquidityProvider].push(_week);
 
-    emit Allocated(_liquidityProvider, _bal);
+    emit Allocated(_liquidityProvider, _week, _bal);
   }
 
 }
