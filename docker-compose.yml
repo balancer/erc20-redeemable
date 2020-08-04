@@ -9,7 +9,8 @@ services:
     command: ganache-cli --blockTime=1 --mnemonic "album wire record stuff abandon mesh museum piece bean allow refuse below"
   ganache-deploy:
     build:
-      context: ./ethereum
+      #context: ./ethereum
+      context: ./merkle
       dockerfile: Dockerfile
     healthcheck:
       test: curl -sf -X POST --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://ganache:8545

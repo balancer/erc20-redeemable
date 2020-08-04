@@ -106,3 +106,4 @@ dist
 
 # RBAC secrets
 /ethereum/.secret.json
+/merkle/.secret.json
