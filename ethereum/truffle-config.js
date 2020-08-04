@@ -23,7 +23,7 @@ const infuraKey = process.env.INFURA_KEY;
 const fs = require("fs");
 const path = require("path");
 const ganacheMnemonic =
-  "album wire record stuff abandon mesh museum piece bean allow refuse below"
+  "album wire record stuff abandon mesh museum piece bean allow refuse below";
 
 function walletProvider(filepath) {
   if (fs.existsSync(filepath)) {
@@ -68,7 +68,13 @@ module.exports = {
       gasPrice
     }
   },
-  mocha: {},
+  mocha: {
+    reporter: "eth-gas-reporter",
+    reporterOptions: {
+      currency: "USD",
+      gasPrice: 50
+    }
+  },
   compilers: {
     solc: {
       version: "0.6.0" // Fetch exact version from solc-bin (default: truffle's version)
