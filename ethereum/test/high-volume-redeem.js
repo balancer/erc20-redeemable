@@ -36,13 +36,15 @@ contract("Redeem - High Volume", accounts => {
 
     await redeem.seedAllocations(1, addresses, balances);
 
-    let result = await redeem.getAllocation(1, addresses[36]);
+    //let result = await redeem.getAllocation(1, addresses[36]);
+    let result = await redeem.balanceOf(addresses[36]);
     assert(
       result == utils.toWei("360"),
       "account 36 should have an allocation"
     );
 
-    result = await redeem.getAllocation(1, addresses[48]);
+    //result = await redeem.getAllocation(1, addresses[48]);
+    result = await redeem.balanceOf(addresses[48]);
     assert(
       result == utils.toWei("480"),
       "account 48 should have an allocation"

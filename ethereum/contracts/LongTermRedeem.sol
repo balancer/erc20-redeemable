@@ -11,19 +11,17 @@ contract Redeem {
   event Allocated(address _claimant, uint256 _week, uint256 _balance);
   event Claimed(address _claimant, uint256 _balance);
 
+
   // the outstanding balances for each user (by week)
   mapping(address => uint[]) public weeksWithBenefits;
   
   // Recorded weeks
   uint latestWeek;
-  uint latestWeekTimestamp;
-  bytes32 latestWeekBlockHash;
+  mapping(uint => uint) weekTimestamps;
+  mapping(uint => bytes32) weekBlockHashes;
 
   // balances by [week][address]
-  //mapping(uint => mapping(address => uint)) balances;
-  mapping(address => uint) vestedBalances;
-  mapping(address => uint) pendingBalances;
-  address[] usersWithPendingBalances;
+  mapping(uint => mapping(address => uint)) balances;
 
   constructor(
     address _token
@@ -43,8 +41,8 @@ contract Redeem {
   }
 
   modifier requireWeekRecorded(uint _week) {
-    require(latestWeek != 0);
-    require(latestWeekBlockHash != 0);
+    require(weekTimestamps[_week] != 0);
+    require(weekBlockHashes[_week] != 0);
     _;
   }
 
@@ -58,26 +56,65 @@ contract Redeem {
   }
 
 
-  function offsetRequirementMet(address user) view public returns (bool){
-      uint offsetSeconds = userWeekOffset(user, latestWeekBlockHash);
+  function offsetRequirementMet(address user, uint _week) view public returns (bool){
+      bytes32 blockHash = weekBlockHashes[_week];
+      uint timestamp = weekTimestamps[_week];
+      uint offsetSeconds = userWeekOffset(user, blockHash);
 
-      uint earliestClaimableTimestamp = latestWeekTimestamp + offsetSeconds;
+      uint earliestClaimableTimestamp = timestamp + (offsetSeconds);
       return earliestClaimableTimestamp < block.timestamp;
   }
+
+  // claim has to be for a single week to prevent out of gas if someone were to wait too long to
+  // retrieve their earnings
+  function claimWeek(uint _week) public
+  requireWeekInPast(_week)
+  requireWeekRecorded(_week)
+  {
+
+    // if trying to claim for the current week
+    if(_week == latestWeek) {
+      require(offsetRequirementMet(msg.sender, latestWeek), "It is too early to claim for the current week");
+    }
+    uint bal = balances[_week][msg.sender];
+    disburse(msg.sender, bal);
+    delete balances[_week][msg.sender];
+  }
+
 
   // attempt to claim all - if this is too much gas, fallback to claim function above
   function claim() public returns (bool)
   {
-    uint balance = vestedBalances[msg.sender];
-    delete vestedBalances[msg.sender];
+    uint totalBalance = 0;
 
-    bool disburseCurrentWeek = offsetRequirementMet(msg.sender);
-    if (disburseCurrentWeek) {
-      balance += pendingBalances[msg.sender];
-      delete pendingBalances[msg.sender];
+    uint numClaimableWeeks;
+
+    uint lastIndex = weeksWithBenefits[msg.sender].length - 1;
+
+    bool disburseCurrentWeek = offsetRequirementMet(msg.sender, latestWeek);
+    bool earnedThisWeek = (lastIndex >= 0) && weeksWithBenefits[msg.sender][lastIndex] != 0;
+
+    bool payoutAll = disburseCurrentWeek || !earnedThisWeek;
+
+    if (payoutAll){
+      numClaimableWeeks = weeksWithBenefits[msg.sender].length;
+    } else if (latestWeek != 0) {
+      numClaimableWeeks = weeksWithBenefits[msg.sender].length - 1;
     }
+      
 
-    disburse(msg.sender, balance);
+    for(uint i = 0; i < numClaimableWeeks; i++) {
+      uint week = weeksWithBenefits[msg.sender][i];
+      totalBalance += balances[week][msg.sender];
+      delete balances[week][msg.sender];
+    }
+    disburse(msg.sender, totalBalance);
+
+    if (payoutAll) {
+      delete weeksWithBenefits[msg.sender];
+    } else if (latestWeek != 0) {
+      weeksWithBenefits[msg.sender] = [latestWeek];
+    }
   }
 
   function userWeekOffset(address _liquidityProvider, bytes32 _weekBlockHash) pure public returns (uint offset) {
@@ -96,23 +133,15 @@ contract Redeem {
   function finishWeek(uint _week, uint _timestamp, bytes32 _blockHash) public
   onlyOwner
   {
-    latestWeekTimestamp = _timestamp;
-    latestWeekBlockHash = _blockHash;
+    weekTimestamps[_week] = _timestamp;
+    weekBlockHashes[_week] = _blockHash;
     if (_week > latestWeek) { // just in case we get these out of order
       latestWeek = _week;
-
-      address lp;
-      for(uint i = 0; i < usersWithPendingBalances.length; i += 1) {
-        lp = usersWithPendingBalances[i];
-        vestedBalances[lp] += pendingBalances[lp];
-        delete pendingBalances[lp];
-      }
-      delete usersWithPendingBalances;
     }
   }
 
-  function balanceOf(address _liquidityProvider) external view returns (uint) {
-    return pendingBalances[_liquidityProvider] + vestedBalances[_liquidityProvider];
+  function getAllocation(uint _week, address _liquidityProvider) view public returns (uint) {
+    return balances[_week][_liquidityProvider];
   }
 
   function seedAllocations(uint _week, address[] calldata _liquidityProviders, uint[] calldata _balances) external
@@ -121,13 +150,10 @@ contract Redeem {
   {
     require(_liquidityProviders.length == _balances.length, "must be an equal number of liquidityProviders and balances");
 
-    address lp;
     for(uint i = 0; i < _liquidityProviders.length; i += 1) {
-      lp = _liquidityProviders[i];
       // record their balance for the week
-      pendingBalances[lp] = _balances[i];
-      usersWithPendingBalances.push(lp);
-      //weeksWithBenefits[_liquidityProviders[i]].push(_week);
+      balances[_week][_liquidityProviders[i]] = _balances[i];
+      weeksWithBenefits[_liquidityProviders[i]].push(_week);
 
       emit Allocated(_liquidityProviders[i], _week, _balances[i]);
     }
@@ -137,8 +163,8 @@ contract Redeem {
   requireWeekRecorded(_week)
   onlyOwner
   {
-    pendingBalances[_liquidityProvider] = _bal;
-    usersWithPendingBalances.push(_liquidityProvider);
+    balances[_week][_liquidityProvider] = _bal;
+    weeksWithBenefits[_liquidityProvider].push(_week);
 
     emit Allocated(_liquidityProvider, _week, _bal);
   }

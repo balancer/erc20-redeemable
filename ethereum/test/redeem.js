@@ -69,7 +69,8 @@ contract("Redeem", accounts => {
     await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
     await redeem.seedAllocation(1, accounts[0], utils.toWei("1000"));
 
-    let result = await redeem.getAllocation(1, accounts[0]);
+    //let result = await redeem.getAllocation(1, accounts[0]);
+    let result = await redeem.balanceOf(accounts[0]);
     assert(result == utils.toWei("1000"), "user should have an allocation");
   });
 
@@ -84,13 +85,15 @@ contract("Redeem", accounts => {
       [utils.toWei("1000"), utils.toWei("2000")]
     );
 
-    let result = await redeem.getAllocation(1, accounts[0]);
+    //let result = await redeem.getAllocation(1, accounts[0]);
+    let result = await redeem.balanceOf(accounts[0]);
     assert(
       result == utils.toWei("1000"),
       "account 0 should have an allocation"
     );
 
-    result = await redeem.getAllocation(1, accounts[1]);
+    //result = await redeem.getAllocation(1, accounts[1]);
+    result = await redeem.balanceOf(accounts[1]);
     assert(
       result == utils.toWei("2000"),
       "account 1 should have an allocation"
@@ -122,23 +125,24 @@ contract("Redeem", accounts => {
       await redeem.finishWeek(1, lastBlock.timestamp, lastBlockHash);
       await redeem.seedAllocation(1, accounts[1], utils.toWei("1000"));
 
-      let result = await redeem.getAllocation(1, accounts[1], {
+      //let result = await redeem.getAllocation(1, accounts[1], {
+      let result = await redeem.balanceOf(accounts[1], {
         from: accounts[1]
       });
       assert(result == utils.toWei("1000"), "user should have an allocation");
     });
 
-    it("Allows the user to claimWeek once time has passed", async () => {
+    it("Allows the user to claim once time has passed", async () => {
       await increaseTime(5); // needs to be 1 days minimum
-      await redeem.claimWeek(1, { from: accounts[1] });
+      await redeem.claim({ from: accounts[1] });
 
       let result = await tbal.balanceOf(accounts[1]);
       assert(result == utils.toWei("1000"), "user should have an allocation");
     });
 
-    it("Reverts when the user attempts to claimWeek prematurely", async () => {
+    it("Reverts when the user attempts to claim prematurely", async () => {
       await increaseTime(0);
-      await assertRevert(redeem.claimWeek(1, { from: accounts[1] }));
+      await assertRevert(redeem.claim({ from: accounts[1] }));
     });
   });
 
