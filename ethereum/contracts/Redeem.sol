@@ -6,6 +6,7 @@ import "./IERC20.sol";
 contract Redeem {
 
   IERC20 public token;
+  address public owner;
 
   event Allocated(address _claimant, uint256 _week, uint256 _balance);
   event Claimed(address _claimant, uint256 _balance);
@@ -26,6 +27,12 @@ contract Redeem {
     address _token
   ) public {
     token = IERC20(_token);
+    owner = msg.sender;
+  }
+
+  modifier onlyOwner() {
+    require(msg.sender == owner, "Must be the contract owner");
+    _;
   }
 
   modifier requireWeekInPast(uint week) {
@@ -124,6 +131,7 @@ contract Redeem {
   }
 
   function finishWeek(uint _week, uint _timestamp, bytes32 _blockHash) public
+  onlyOwner
   {
     weekTimestamps[_week] = _timestamp;
     weekBlockHashes[_week] = _blockHash;
@@ -138,6 +146,7 @@ contract Redeem {
 
   function seedAllocations(uint _week, address[] calldata _liquidityProviders, uint[] calldata _balances) external
   requireWeekRecorded(_week)
+  onlyOwner
   {
     require(_liquidityProviders.length == _balances.length, "must be an equal number of liquidityProviders and balances");
 
@@ -152,6 +161,7 @@ contract Redeem {
 
   function seedAllocation(uint _week, address _liquidityProvider, uint _bal) external
   requireWeekRecorded(_week)
+  onlyOwner
   {
     balances[_week][_liquidityProvider] = _bal;
     weeksWithBenefits[_liquidityProvider].push(_week);
