@@ -1,0 +1,19 @@
+version: '2.1'
+services:
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    ports:
+      - "8545:8545"
+    #command: ganache-cli --blockTime=2 --account="0x275AA504F6C89A95A5A0742DF03BF656E496538498986C318EE72C2D190FE77D,100000000000000000000" --mnemonic "album wire record stuff abandon mesh museum piece bean allow refuse below"
+    command: ganache-cli --blockTime=2 --mnemonic "album wire record stuff abandon mesh museum piece bean allow refuse below"
+  ganache-deploy:
+    build:
+      context: ./ethereum
+      dockerfile: Dockerfile
+    healthcheck:
+      test: curl -sf -X POST --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' http://ganache:8545
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./ethereum/build:/usr/src/app/build

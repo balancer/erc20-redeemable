@@ -1,0 +1,22 @@
+{
+  "name": "erc20-redeemable",
+  "version": "1.0.0",
+  "description": "ERC20 redemption contract",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gtaschuk/erc20-redeemable.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gtaschuk/erc20-redeemable/issues"
+  },
+  "homepage": "https://github.com/gtaschuk/erc20-redeemable#readme",
+  "dependencies": {
+    "concurrently": "^5.1.0"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "erc20-redeemable",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "chai": "^4.2.0",
+    "eslint": "6.1.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-babel": "^4.1.2",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.0",
+    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "eth-gas-reporter": "^0.1.12",
+    "husky": "^1.1.2",
+    "jest-junit": "^3.1.0",
+    "lint-staged": "^7.3.0",
+    "node-fetch": "^2.3.0",
+    "openzeppelin-test-helpers": "^0.4.3",
+    "prettier": "1.14.3",
+    "solium": "^1.1.8"
+  },
+  "dependencies": {
+    "bn.js": "^4.11.0",
+    "openzeppelin-solidity": "^2.3.0",
+    "truffle": "^5.1.10",
+    "@truffle/hdwallet-provider": "^1.0.29"
+  },
+  "scripts": {
+    "test": "truffle test",
+    "compile-contracts": "truffle compile",
+    "migrate-contracts": "truffle migrate",
+    "deploy-contracts": "truffle deploy",
+    "deploy-contracts-from-docker": "truffle deploy --network dockerGanache",
+    "lint": "eslint scripts",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:sol": "solium -d ./contracts",
+    "console": "truffle console",
+    "networks": "truffle networks"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
