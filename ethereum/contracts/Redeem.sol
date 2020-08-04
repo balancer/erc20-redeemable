@@ -96,9 +96,10 @@ contract Redeem {
   function finishWeek(uint _week, uint _timestamp, bytes32 _blockHash) public
   onlyOwner
   {
-    latestWeekTimestamp = _timestamp;
-    latestWeekBlockHash = _blockHash;
     if (_week > latestWeek) { // just in case we get these out of order
+      latestWeekTimestamp = _timestamp;
+      latestWeekBlockHash = _blockHash;
+
       latestWeek = _week;
 
       address lp;
