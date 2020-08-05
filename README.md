@@ -1,7 +1,7 @@
-## ERC20-Reedem
+## ERC20-Redeem
 
 This project implements a smart contract that distributes token rewards to participants throughout a week-long interval.
-Admins add token allocations for each user to the contract, which then become claimable in the form of ERC20 tokens across the 7 days of the week, ensuring that a large distribution doesn't upset the market for tokens.
+Admins add token allocations for each user to the contract, which then become claimable in the form of ERC20 tokens across the week, ensuring that a large distribution doesn't upset the market.
 
 ## Context
 
@@ -21,12 +21,6 @@ Currently BAL is distributed in a gas intensive ERC-20 mass transfer.   Allowing
 __Liquidity Provider__: As a balancer liquidity provider I earn tokens based on my contribution to my liquidity pools - so I navigate to balancer.exchange and click redeem to retrieve the tokens that are owed to me.  This sends a transaction to a smart contract which sends the tokens I am owed to my account.
 
 __Balancer governance user__: As a balancer employee, I need to send users their accrued BAL based on the value of tokens in their pools.  I may want to restrict how long before a user can unlock their BAL
-
-
-## Complexity Analysis
-
-As new allocations are stored in this contract, and new users join the platform, the need for memory grows to accomodate the allocations.
-In order to claim one's tokens, a transaction to the `claim` or `claimWeek` function must be executed - the gas required to do this increases with the number of allocations scales with the number of weeks of unclaimed allocations.  In the unlikely event that a user attempts to withdraw so many weeks of earnings that the transaction will not fit in a block _O(n)_, the user can redeem their claims on a week by week basis by calling `claimWeek`, which will only process a disbursement for one week's worth of funds.
 
 ## Future Requirements
 
