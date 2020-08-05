@@ -11,14 +11,11 @@ contract MerkleRedeem {
   event Claimed(address _claimant, uint256 _balance);
 
 
-  // the outstanding balances for each user (by week)
-  mapping(address => uint[]) public weeksWithBenefits;
-  
   // Recorded weeks
   uint latestWeek;
-  mapping(uint => bytes32) merkleRoots;
-  mapping(uint => uint) weekTimestamps;
-  mapping(uint => bytes32) weekBlockHashes;
+  mapping(uint => bytes32) public weekMerkleRoots;
+  mapping(uint => uint) public weekTimestamps;
+  mapping(uint => bytes32) public weekBlockHashes;
 
   mapping(uint => mapping(address => bool)) claimed;
 
@@ -84,7 +81,7 @@ contract MerkleRedeem {
 
   function verifyClaim(address _liquidityProvider, uint _week, uint _claimedBalance, bytes32[] memory _merkleProof) view public returns (bool valid) {
     bytes32 leaf = keccak256(abi.encodePacked(_liquidityProvider, _claimedBalance));
-    return MerkleProof.verify(_merkleProof, merkleRoots[_week], leaf);
+    return MerkleProof.verify(_merkleProof, weekMerkleRoots[_week], leaf);
   }
 
   function userWeekOffset(address _liquidityProvider, bytes32 _weekBlockHash) pure public returns (uint offset) {
@@ -114,7 +111,7 @@ contract MerkleRedeem {
   requireWeekRecorded(_week)
   onlyOwner
   {
-    require(merkleRoots[_week] == bytes32(0), "cannot rewrite merkle root");
-    merkleRoots[_week] = _merkleRoot;
+    require(weekMerkleRoots[_week] == bytes32(0), "cannot rewrite merkle root");
+    weekMerkleRoots[_week] = _merkleRoot;
   }
 }
