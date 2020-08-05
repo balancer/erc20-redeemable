@@ -147,7 +147,7 @@ contract("MerkleRedeem", accounts => {
     });
 
     it("Allows the user to claimWeek once time has passed", async () => {
-      await increaseTime(6); // needs to be 1 days minimum
+      await increaseTime(6);
       let claimedBalance = utils.toWei("1000");
       const merkleProof = merkleTree.getHexProof(elements[0]);
       await redeem.claimWeek(1, claimedBalance, merkleProof, {
@@ -162,6 +162,29 @@ contract("MerkleRedeem", accounts => {
       await increaseTime(0);
       let claimedBalance = utils.toWei("1000");
       const merkleProof = merkleTree.getHexProof(elements[0]);
+      await assertRevert(
+        redeem.claimWeek(1, claimedBalance, merkleProof, { from: accounts[1] })
+      );
+    });
+
+    it("Reverts when the user attempts to claim the wrong balance", async () => {
+      await increaseTime(0);
+      let claimedBalance = utils.toWei("666");
+      const merkleProof = merkleTree.getHexProof(elements[0]);
+      await assertRevert(
+        redeem.claimWeek(1, claimedBalance, merkleProof, { from: accounts[1] })
+      );
+    });
+
+    it("Reverts when the user attempts to claim twice", async () => {
+      await increaseTime(6);
+      let claimedBalance = utils.toWei("1000");
+      const merkleProof = merkleTree.getHexProof(elements[0]);
+
+      await redeem.claimWeek(1, claimedBalance, merkleProof, {
+        from: accounts[1]
+      });
+
       await assertRevert(
         redeem.claimWeek(1, claimedBalance, merkleProof, { from: accounts[1] })
       );
