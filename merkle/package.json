@@ -42,7 +42,8 @@
     "lint:fix": "npm run lint -- --fix",
     "lint:sol": "solium -d ./contracts",
     "console": "truffle console",
-    "networks": "truffle networks"
+    "networks": "truffle networks",
+    "disburse": "truffle exec scripts/disburse.js"
   },
   "husky": {
     "hooks": {
