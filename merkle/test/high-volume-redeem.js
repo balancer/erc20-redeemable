@@ -14,6 +14,8 @@ contract("MerkleRedeem - High Volume", accounts => {
   let tbal;
   let TBAL;
 
+  const TEST_QUANTITY = 200;
+
   beforeEach(async () => {
     tbal = await TToken.new("Test Bal", "TBAL", 18);
     await tbal.mint(admin, utils.toWei("145000"));
@@ -24,12 +26,12 @@ contract("MerkleRedeem - High Volume", accounts => {
     await tbal.transfer(REDEEM, utils.toWei("20000"));
   });
 
-  it("stores 100 allocations", async () => {
+  it("stores " + TEST_QUANTITY + " allocations", async () => {
     const lastBlock = await web3.eth.getBlock("latest");
 
     await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
 
-    let addresses = [...Array(100).keys()].map(
+    let addresses = [...Array(TEST_QUANTITY).keys()].map(
       num => eth.accounts.create().address
     );
 
