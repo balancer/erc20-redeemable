@@ -234,5 +234,26 @@ contract("MerkleRedeem", accounts => {
         "user should receive all tokens, including current week"
       );
     });
+
+    it("Allows the user to claim multiple weeks at once", async () => {
+      await increaseTime(8);
+
+      let claimedBalance1 = utils.toWei("1000");
+      let claimedBalance2 = utils.toWei("1234");
+
+      const proof1 = merkleTree1.getHexProof(elements1[0]);
+      const proof2 = merkleTree2.getHexProof(elements2[0]);
+
+      await redeem.claimWeeks(
+        [[1, claimedBalance1, proof1], [2, claimedBalance2, proof2]],
+        { from: accounts[1] }
+      );
+
+      let result = await tbal.balanceOf(accounts[1]);
+      assert(
+        result == utils.toWei("2234"),
+        "user should receive all tokens, including current week"
+      );
+    });
   });
 });
