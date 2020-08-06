@@ -74,8 +74,8 @@ contract MerkleRedeem {
     require(!claimed[_week][msg.sender]);
     require(verifyClaim(msg.sender, _week, _claimedBalance, _merkleProof), 'Incorrect merkle proof');
 
-    disburse(msg.sender, _claimedBalance);
     claimed[_week][msg.sender] = true;
+    disburse(msg.sender, _claimedBalance);
   }
 
   struct Claim {
