@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   ganache:
-    image: trufflesuite/ganache-cli:latest
+    image: trufflesuite/ganache-cli:v6.10.1
     ports:
       - "8545:8545"
     # Nota Bene - the mnemonic below is *INSECURE* and shouldn't be used for real funds, only local development
