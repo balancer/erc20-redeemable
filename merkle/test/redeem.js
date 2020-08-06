@@ -4,7 +4,7 @@ const should = require("chai").should();
 const { promisify } = require("util");
 const { utils } = web3;
 const { MerkleTree } = require("../lib/merkleTree");
-//const { soliditySha3 } = require('web3-utils')
+const { increaseTime } = require("./helpers");
 
 async function assertRevert(promise) {
   try {
@@ -113,22 +113,6 @@ contract("MerkleRedeem", accounts => {
     result = await redeem.verifyClaim(accounts[1], 1, claimBalance1, proof1);
     assert(result, "account 1 should have an allocation");
   });
-
-  const increaseTime = async days => {
-    await promisify(web3.currentProvider.send)({
-      jsonrpc: "2.0",
-      method: "evm_increaseTime",
-      params: [days * 24 * 3600 + 1], // 1 extra second
-      id: 0
-    });
-
-    await promisify(web3.currentProvider.send)({
-      jsonrpc: "2.0",
-      method: "evm_mine",
-      params: [],
-      id: new Date().getSeconds()
-    });
-  };
 
   describe("When a user has an allocation to claim", () => {
     const claimBalance = utils.toWei("1000");
