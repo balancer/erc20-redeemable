@@ -151,6 +151,16 @@ contract("MerkleRedeem", accounts => {
       );
     });
 
+    it("Doesn't allow a user to claim for another user", async () => {
+      await increaseTime(6);
+      let claimedBalance = utils.toWei("1000");
+      const merkleProof = merkleTree.getHexProof(elements[0]);
+
+      await assertRevert(
+        redeem.claimWeek(1, claimedBalance, merkleProof, { from: accounts[2] })
+      );
+    });
+
     it("Reverts when the user attempts to claim the wrong balance", async () => {
       await increaseTime(0);
       let claimedBalance = utils.toWei("666");
