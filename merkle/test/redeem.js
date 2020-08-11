@@ -5,19 +5,7 @@ const { promisify } = require("util");
 const { utils } = web3;
 const { MerkleTree } = require("../lib/merkleTree");
 const { increaseTime } = require("./helpers");
-
-async function assertRevert(promise) {
-  try {
-    await promise;
-  } catch (error) {
-    error.message.should.include(
-      "revert",
-      `Expected "revert()", got ${error} instead`
-    );
-    return;
-  }
-  should.fail('Expected "revert()"');
-}
+const truffleAssert = require("truffle-assertions");
 
 contract("MerkleRedeem", accounts => {
   const admin = accounts[0];
@@ -103,7 +91,7 @@ contract("MerkleRedeem", accounts => {
     const merkleTree2 = new MerkleTree(elements);
     const root2 = merkleTree.getHexRoot();
 
-    await assertRevert(redeem.seedAllocations(1, root2));
+    await truffleAssert.reverts(redeem.seedAllocations(1, root2));
   });
 
   it("stores multiple allocations", async () => {
@@ -153,8 +141,10 @@ contract("MerkleRedeem", accounts => {
       let claimedBalance = utils.toWei("1000");
 
       const merkleProof = merkleTree.getHexProof(elements[0]);
-      await assertRevert(
-        redeem.claimWeek(1, claimedBalance, merkleProof, { from: accounts[1] })
+      await truffleAssert.reverts(
+        redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
+          from: accounts[1]
+        })
       );
     });
   });
@@ -194,7 +184,7 @@ contract("MerkleRedeem", accounts => {
       await increaseTime(0);
       let claimedBalance = utils.toWei("1000");
       const merkleProof = merkleTree.getHexProof(elements[0]);
-      await assertRevert(
+      await truffleAssert.reverts(
         redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
           from: accounts[1]
         })
@@ -206,7 +196,7 @@ contract("MerkleRedeem", accounts => {
       let claimedBalance = utils.toWei("1000");
       const merkleProof = merkleTree.getHexProof(elements[0]);
 
-      await assertRevert(
+      await truffleAssert.reverts(
         redeem.claimWeek(accounts[2], 1, claimedBalance, merkleProof, {
           from: accounts[2]
         })
@@ -217,7 +207,7 @@ contract("MerkleRedeem", accounts => {
       await increaseTime(0);
       let claimedBalance = utils.toWei("666");
       const merkleProof = merkleTree.getHexProof(elements[0]);
-      await assertRevert(
+      await truffleAssert.reverts(
         redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
           from: accounts[1]
         })
@@ -233,7 +223,7 @@ contract("MerkleRedeem", accounts => {
         from: accounts[1]
       });
 
-      await assertRevert(
+      await truffleAssert.reverts(
         redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
           from: accounts[1]
         })

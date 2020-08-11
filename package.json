@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "ERC20 redemption contract",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gtaschuk/erc20-redeemable.git"
