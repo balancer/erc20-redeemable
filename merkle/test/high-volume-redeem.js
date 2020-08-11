@@ -133,6 +133,7 @@ contract("MerkleRedeem - High Volume", accounts => {
       const proof5 = merkleTree5.getHexProof(elements5[0]);
 
       await redeem.claimWeeks(
+        accounts[1],
         [
           [1, claimBalance1, proof1],
           [2, claimBalance2, proof2],
