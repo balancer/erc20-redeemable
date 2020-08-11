@@ -137,6 +137,28 @@ contract("MerkleRedeem", accounts => {
     assert(result, "account 1 should have an allocation");
   });
 
+  describe("With a week finished", () => {
+    const claimBalance = utils.toWei("1000");
+    const elements = [utils.soliditySha3(accounts[1], claimBalance)];
+    const merkleTree = new MerkleTree(elements);
+    //const root = merkleTree.getHexRoot();
+
+    beforeEach(async () => {
+      const lastBlock = await web3.eth.getBlock("latest");
+      await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
+    });
+
+    it("Reverts when the user attempts to claim before an allocation is produced", async () => {
+      await increaseTime(9);
+      let claimedBalance = utils.toWei("1000");
+
+      const merkleProof = merkleTree.getHexProof(elements[0]);
+      await assertRevert(
+        redeem.claimWeek(1, claimedBalance, merkleProof, { from: accounts[1] })
+      );
+    });
+  });
+
   describe("When a user has an allocation to claim", () => {
     const claimBalance = utils.toWei("1000");
     const elements = [utils.soliditySha3(accounts[1], claimBalance)];
