@@ -1,0 +1,36 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.13.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "~/project/merkle/package.json" }}
+          - v1-dependencies-
+      - run: cd ~/project/merkle && yarn
+      - save_cache:
+          paths:
+            - merkle/node_modules
+          key: v1-dependencies-{{ checksum "~/project/merkle/package.json" }}
+  test:
+    docker:
+      - image: circleci/node:10.13.0
+      - image: trufflesuite/ganache-cli:v6.10.1
+        command: ganache-cli --mnemonic "album wire record stuff abandon mesh museum piece bean allow refuse below"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies
+      - run: cd ~/project/merkle && npm run test
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
