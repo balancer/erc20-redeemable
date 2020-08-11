@@ -1,3 +1,10 @@
+<p align="center">
+  <a href="https://circleci.com/gh/balancer-labs/erc20-redeemable">
+    <img src="https://circleci.com/gh/balancer-labs/erc20-redeemable.svg?style=svg&circle-token=9a37f7bd57941449ac54e9041a2693bdbc7ca40c" />
+  </a>
+</p>
+
+
 ## ERC20-Redeem
 
 This project implements a smart contract that distributes token rewards to participants throughout a week-long interval.
