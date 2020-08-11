@@ -62,20 +62,20 @@ contract MerkleRedeem {
       return earliestClaimableTimestamp < block.timestamp;
   }
 
-  function claimWeek(uint _week, uint _claimedBalance, bytes32[] memory _merkleProof) public
+  function claimWeek(address _liquidityProvider, uint _week, uint _claimedBalance, bytes32[] memory _merkleProof) public
   requireWeekInPast(_week)
   requireWeekRecorded(_week)
   {
     // if trying to claim for the current week
     if(_week == latestWeek) {
-      require(offsetRequirementMet(msg.sender, latestWeek), "It is too early to claim for the current week");
+      require(offsetRequirementMet(_liquidityProvider, latestWeek), "It is too early to claim for the current week");
     }
 
-    require(!claimed[_week][msg.sender]);
-    require(verifyClaim(msg.sender, _week, _claimedBalance, _merkleProof), 'Incorrect merkle proof');
+    require(!claimed[_week][_liquidityProvider]);
+    require(verifyClaim(_liquidityProvider, _week, _claimedBalance, _merkleProof), 'Incorrect merkle proof');
 
-    claimed[_week][msg.sender] = true;
-    disburse(msg.sender, _claimedBalance);
+    claimed[_week][_liquidityProvider] = true;
+    disburse(_liquidityProvider, _claimedBalance);
   }
 
   struct Claim {
@@ -85,7 +85,7 @@ contract MerkleRedeem {
 
   }
 
-  function claimWeeks(Claim[] memory claims) public
+  function claimWeeks(address _liquidityProvider, Claim[] memory claims) public
   {
     uint totalBalance = 0;
     Claim memory claim ;
@@ -97,16 +97,16 @@ contract MerkleRedeem {
 
       // if trying to claim for the current week
       if(claim.week == latestWeek) {
-        require(offsetRequirementMet(msg.sender, latestWeek), "It is too early to claim for the current week");
+        require(offsetRequirementMet(_liquidityProvider, latestWeek), "It is too early to claim for the current week");
       }
 
-      require(!claimed[claim.week][msg.sender]);
-      require(verifyClaim(msg.sender, claim.week, claim.balance, claim.merkleProof), 'Incorrect merkle proof');
+      require(!claimed[claim.week][_liquidityProvider]);
+      require(verifyClaim(_liquidityProvider, claim.week, claim.balance, claim.merkleProof), 'Incorrect merkle proof');
 
       totalBalance += claim.balance;
-      claimed[claim.week][msg.sender] = true;
+      claimed[claim.week][_liquidityProvider] = true;
     }
-    disburse(msg.sender, totalBalance);
+    disburse(_liquidityProvider, totalBalance);
   }
 
   function verifyClaim(address _liquidityProvider, uint _week, uint _claimedBalance, bytes32[] memory _merkleProof) view public returns (bool valid) {
