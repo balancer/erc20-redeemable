@@ -83,6 +83,29 @@ contract("MerkleRedeem", accounts => {
     assert(result, "user should have an allocation");
   });
 
+  it("doesn't allow an allocation to be overwritten", async () => {
+    let claimBalance = utils.toWei("9876");
+    const lastBlock = await web3.eth.getBlock("latest");
+
+    await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
+
+    const elements = [utils.soliditySha3(accounts[0], claimBalance)];
+    const merkleTree = new MerkleTree(elements);
+    const root = merkleTree.getHexRoot();
+
+    await redeem.seedAllocations(1, root);
+
+    // construct tree to attempt to override the allocation
+    const elements2 = [
+      utils.soliditySha3(accounts[0], claimBalance),
+      utils.soliditySha3(accounts[1], claimBalance)
+    ];
+    const merkleTree2 = new MerkleTree(elements);
+    const root2 = merkleTree.getHexRoot();
+
+    await assertRevert(redeem.seedAllocations(1, root2));
+  });
+
   it("stores multiple allocations", async () => {
     const lastBlock = await web3.eth.getBlock("latest");
 

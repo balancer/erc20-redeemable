@@ -43,6 +43,11 @@ contract MerkleRedeem {
     _;
   }
 
+  modifier requireMerkleRootUnset(uint _week) {
+    require(weekMerkleRoots[_week] == bytes32(0));
+    _;
+  }
+
   function disburse(address _liquidityProvider, uint _balance) private {
     if (_balance > 0) {
       token.transfer(_liquidityProvider, _balance);
@@ -139,6 +144,7 @@ contract MerkleRedeem {
 
   function seedAllocations(uint _week, bytes32 _merkleRoot) external
   requireWeekRecorded(_week)
+  requireMerkleRootUnset(_week)
   onlyOwner
   {
     require(weekMerkleRoots[_week] == bytes32(0), "cannot rewrite merkle root");
