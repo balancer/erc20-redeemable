@@ -18,7 +18,7 @@ contract MerkleRedeem {
   mapping(uint => uint) public weekTimestamps;
   mapping(uint => bytes32) public weekBlockHashes;
 
-  mapping(uint => mapping(address => bool)) claimed;
+  mapping(uint => mapping(address => bool)) public claimed;
 
   constructor(
     address _token

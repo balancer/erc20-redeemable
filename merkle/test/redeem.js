@@ -140,6 +140,9 @@ contract("MerkleRedeem", accounts => {
 
       let result = await tbal.balanceOf(accounts[1]);
       assert(result == claimedBalance, "user should have an allocation");
+
+      result = await redeem.claimed(1, accounts[1]);
+      assert(result == true, "claim should be marked as claimed");
     });
 
     it("Reverts when the user attempts to claim prematurely", async () => {
