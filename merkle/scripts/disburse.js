@@ -1,28 +1,32 @@
-//const Redeem = artifacts.require("./MerkleRedeem.sol");
+// Usage example:
+// npm run disburse -- /home/greg/erc20-redeemable/merkle/test/10_totals.json 10622281
+
 const { MerkleTree } = require("../lib/merkleTree");
-const { utils, eth } = web3;
+const { utils } = web3;
+const { loadTree } = require("./loadTree");
 const fs = require("fs");
-const readline = require("readline");
 
 module.exports = async function(callback) {
-  let elements = [];
-
-  //let redeem = await Redeem.deployed();
   console.log("File Path Arg (must be absolute):", process.argv[4]);
 
-  const rawdata = fs.readFileSync(process.argv[4]);
-  const balances = JSON.parse(rawdata);
+  const merkleTree = loadTree(utils, process.argv[4]);
+  const blockNum = process.argv[5];
 
-  console.log(balances);
+  const block = await web3.eth.getBlock(blockNum);
+  console.log("Block:\t", blockNum, block.hash, block.timestamp);
 
-  Object.keys(balances).forEach(address => {
-    let balance = balances[address];
-    let leaf = utils.soliditySha3(address, parseInt(balance));
-    console.log("Adding leaf:\t", leaf, " for ", address, balance);
-    elements.push(leaf);
-  });
-
-  const merkleTree = new MerkleTree(elements);
   const root = merkleTree.getHexRoot();
-  console.log("tree has root:\t", root);
+  console.log("Tree:\t", root);
+
+  console.log("\n\n// TO FINISH THIS WEEK");
+  console.log("let redeem\nMerkleRedeem.deployed().then(i => redeem = i);");
+  console.log("let weekNum = 1 // adjust accordingly");
+  console.log(
+    "await redeem.finishWeek(weekNum, " +
+      block.timestamp +
+      ', "' +
+      block.hash +
+      '")'
+  );
+  console.log('await redeem.seedAllocations(weekNum, "' + root + '")');
 };
