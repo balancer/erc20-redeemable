@@ -61,12 +61,12 @@ module.exports = {
       ),
       network_id: "*" // Any network (default: none)
     },
-    rinkeby: {
+    kovan: {
       confirmations: 2,
-      provider: walletProvider(".secret.json"),
-      network_id: 4,
-      gas,
-      gasPrice
+      provider: walletProvider("secrets_kovan.json"),
+      network_id: 42
+      //gas,
+      //gasPrice
     }
   },
   mocha: {
