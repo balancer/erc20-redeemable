@@ -3,7 +3,7 @@ import { parseEther } from '@ethersproject/units';
 import config from '@/config';
 import { isTxReverted } from '@/helpers/utils';
 import { loadTree } from '@/helpers/merkle';
-import testTotals from '@/../reports/10/_totals.json';
+import totalWeek10 from '@/../reports/10/_totals.json';
 
 const mutations = {
   VERIFY_CLAIM_REQUEST() {
@@ -48,8 +48,8 @@ const actions = {
   verifyClaim: async ({ commit, dispatch }, address) => {
     commit('VERIFY_CLAIM_REQUEST');
     const weekNum = 2;
-    const claimBalance = testTotals[address.toLowerCase()];
-    const merkleTree = loadTree(testTotals);
+    const claimBalance = totalWeek10[address.toLowerCase()];
+    const merkleTree = loadTree(totalWeek10);
     const proof = merkleTree.getHexProof(
       soliditySha3(address, toWei(claimBalance))
     );
@@ -70,8 +70,8 @@ const actions = {
   claimWeeks: async ({ commit, dispatch }, address) => {
     commit('CLAIM_WEEKS_REQUEST');
     const weekNum = 2;
-    const claimBalance = testTotals[address.toLowerCase()];
-    const merkleTree = loadTree(testTotals);
+    const claimBalance = totalWeek10[address.toLowerCase()];
+    const merkleTree = loadTree(totalWeek10);
     const proof = merkleTree.getHexProof(
       soliditySha3(address, toWei(claimBalance))
     );
