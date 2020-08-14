@@ -1,7 +1,6 @@
 import { WebSocketProvider } from '@ethersproject/providers';
+import config from '@/config';
 
-const wsProvider = new WebSocketProvider(
-  `wss://eth-mainnet.ws.alchemyapi.io/v2/${process.env.VUE_APP_ALCHEMY_KEY}`
-);
+const wsProvider = new WebSocketProvider(config.alchemyWsUrl);
 
 export default wsProvider;
