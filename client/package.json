@@ -1,7 +1,7 @@
 {
   "name": "balancer-claim",
   "version": "0.1.1",
-  "repository": "balancer-labs/balancer-claim",
+  "repository": "balancer-labs/erc20-redeemable",
   "license": "GPL-3.0",
   "scripts": {
     "serve": "vue-cli-service serve",
