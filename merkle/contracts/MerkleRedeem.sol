@@ -123,6 +123,15 @@ contract MerkleRedeem {
     return arr;
   }
 
+  function merkleRoots(uint _begin, uint _end) view public returns (bytes32[] memory) {
+    uint size = 1 + _end - _begin;
+    bytes32[] memory arr = new bytes32[](size);
+    for(uint i = 0; i < size; i++) {
+      arr[i] = weekMerkleRoots[_begin + i];
+    }
+    return arr;
+  }
+
   function verifyClaim(address _liquidityProvider, uint _week, uint _claimedBalance, bytes32[] memory _merkleProof) view public returns (bool valid) {
     bytes32 leaf = keccak256(abi.encodePacked(_liquidityProvider, _claimedBalance));
     return MerkleProof.verify(_merkleProof, weekMerkleRoots[_week], leaf);

@@ -325,5 +325,15 @@ contract("MerkleRedeem", accounts => {
         "claim status should be accurate"
       );
     });
+
+    it("Returns an array of merkle roots", async () => {
+      let expectedResult = [root1, root2];
+      let result = await redeem.merkleRoots(1, 2);
+      assert.deepEqual(
+        result,
+        expectedResult,
+        "claim status should be accurate"
+      );
+    });
   });
 });
