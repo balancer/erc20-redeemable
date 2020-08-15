@@ -300,5 +300,30 @@ contract("MerkleRedeem", accounts => {
         "user should receive all tokens, including current week"
       );
     });
+
+    it("Returns an array of week claims", async () => {
+      let expectedResult = [false, false];
+      let result = await redeem.claimStatus(accounts[1], 1, 2);
+      assert.deepEqual(
+        result,
+        expectedResult,
+        "claim status should be accurate"
+      );
+      let claimedBalance1 = utils.toWei("1000");
+      const proof1 = merkleTree1.getHexProof(elements1[0]);
+
+      await increaseTime(8);
+      await redeem.claimWeeks(accounts[1], [[1, claimedBalance1, proof1]], {
+        from: accounts[1]
+      });
+
+      expectedResult = [true, false];
+      result = await redeem.claimStatus(accounts[1], 1, 2);
+      assert.deepEqual(
+        result,
+        expectedResult,
+        "claim status should be accurate"
+      );
+    });
   });
 });
