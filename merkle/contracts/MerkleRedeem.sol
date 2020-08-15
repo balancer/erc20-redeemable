@@ -114,6 +114,15 @@ contract MerkleRedeem {
     disburse(_liquidityProvider, totalBalance);
   }
 
+  function claimStatus(address _liquidityProvider, uint _begin, uint _end) view public returns (bool[] memory) {
+    uint size = 1 + _end - _begin;
+    bool[] memory arr = new bool[](size);
+    for(uint i = 0; i < size; i++) {
+      arr[i] = claimed[_begin + i][_liquidityProvider];
+    }
+    return arr;
+  }
+
   function verifyClaim(address _liquidityProvider, uint _week, uint _claimedBalance, bytes32[] memory _merkleProof) view public returns (bool valid) {
     bytes32 leaf = keccak256(abi.encodePacked(_liquidityProvider, _claimedBalance));
     return MerkleProof.verify(_merkleProof, weekMerkleRoots[_week], leaf);
