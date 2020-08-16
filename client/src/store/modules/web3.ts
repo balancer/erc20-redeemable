@@ -5,9 +5,8 @@ import { getAddress } from '@ethersproject/address';
 import { Interface } from '@ethersproject/abi';
 import abi from '@/helpers/abi';
 import config from '@/config';
-import lock from '@/helpers/lock';
 import wsProvider from '@/helpers/ws';
-import { lsSet, lsGet, lsRemove, isTxRejected } from '@/helpers/utils';
+import { isTxRejected } from '@/helpers/utils';
 
 let provider;
 let web3;
@@ -143,21 +142,14 @@ const mutations = {
 
 const actions = {
   login: async ({ dispatch }, connector = 'injected') => {
-    const lockConnector = lock.getConnector(connector);
-    provider = await lockConnector.connect();
+    provider = await Vue.prototype.$auth.login(connector);
     if (provider) {
       web3 = new Web3Provider(provider);
       await dispatch('loadWeb3');
-      if (state.account) lsSet('connector', connector);
     }
   },
   logout: async ({ commit }) => {
-    const connector = lsGet('connector');
-    if (connector) {
-      const lockConnector = lock.getConnector(connector);
-      await lockConnector.logout();
-      lsRemove('connector');
-    }
+    Vue.prototype.$auth.logout();
     commit('LOGOUT');
   },
   loadWeb3: async ({ commit, dispatch }) => {
