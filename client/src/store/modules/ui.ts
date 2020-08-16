@@ -19,7 +19,6 @@ const mutations = {
 const actions = {
   init: async ({ commit, dispatch }) => {
     commit('SET', { loading: true });
-    await dispatch('getBlockNumber');
     const connector = lsGet('connector');
     if (Object.keys(config.connectors).includes(connector)) {
       const lockConnector = lock.getConnector(connector);

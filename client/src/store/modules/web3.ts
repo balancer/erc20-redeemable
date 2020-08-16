@@ -3,7 +3,6 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { getAddress } from '@ethersproject/address';
 import { Interface } from '@ethersproject/abi';
-import store from '@/store';
 import abi from '@/helpers/abi';
 import config from '@/config';
 import lock from '@/helpers/lock';
@@ -13,18 +12,13 @@ import { lsSet, lsGet, lsRemove, isTxRejected } from '@/helpers/utils';
 let provider;
 let web3;
 
-wsProvider.on('block', blockNumber => {
-  store.commit('GET_BLOCK_SUCCESS', blockNumber);
-});
-
 const state = {
   injectedLoaded: false,
   injectedChainId: null,
   account: null,
   name: null,
   active: false,
-  balances: {},
-  blockNumber: 0
+  balances: {}
 };
 
 const mutations = {
@@ -144,16 +138,6 @@ const mutations = {
   },
   SIGN_MESSAGE_FAILURE(_state, payload) {
     console.debug('SIGN_MESSAGE_FAILURE', payload);
-  },
-  GET_BLOCK_REQUEST() {
-    console.debug('GET_BLOCK_REQUEST');
-  },
-  GET_BLOCK_SUCCESS(_state, payload) {
-    Vue.set(_state, 'blockNumber', payload);
-    console.debug('GET_BLOCK_SUCCESS', payload);
-  },
-  GET_BLOCK_FAILURE(_state, payload) {
-    console.debug('GET_BLOCK_FAILURE', payload);
   }
 };
 
@@ -180,7 +164,7 @@ const actions = {
     commit('LOAD_WEB3_REQUEST');
     try {
       await dispatch('loadProvider');
-      await dispatch('loadAccount');
+      await dispatch('lookupAddress');
       commit('LOAD_WEB3_SUCCESS');
       if (!state.injectedLoaded || state.injectedChainId !== config.chainId) {
         await dispatch('loadBackupProvider');
@@ -309,7 +293,7 @@ const actions = {
       const contract = new Contract(
         getAddress(contractAddress),
         abi[contractType],
-        web3
+        wsProvider
       );
       const res = !params
         ? await contract[action]()
@@ -353,20 +337,6 @@ const actions = {
     } catch (e) {
       commit('SIGN_MESSAGE_FAILURE', e);
       return Promise.reject(e);
-    }
-  },
-  loadAccount: async ({ dispatch }) => {
-    await dispatch('lookupAddress');
-  },
-  getBlockNumber: async ({ commit }) => {
-    commit('GET_BLOCK_REQUEST');
-    try {
-      const blockNumber: any = await wsProvider.getBlockNumber();
-      commit('GET_BLOCK_SUCCESS', parseInt(blockNumber));
-      return blockNumber;
-    } catch (e) {
-      commit('GET_BLOCK_FAILURE', e);
-      return Promise.reject();
     }
   }
 };

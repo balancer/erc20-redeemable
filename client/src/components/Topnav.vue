@@ -1,5 +1,5 @@
 <template>
-  <Sticky class="mb-4">
+  <UiSticky class="mb-4">
     <nav id="topnav" class="border-bottom width-full bg-black">
       <Container>
         <div class="d-flex flex-items-center" style="height: 78px;">
@@ -56,7 +56,7 @@
         <ModalAbout :open="modalAboutOpen" @close="modalAboutOpen = false" />
       </Container>
     </nav>
-  </Sticky>
+  </UiSticky>
 </template>
 
 <script>

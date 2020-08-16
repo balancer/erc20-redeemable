@@ -1,55 +1,42 @@
 import { toWei, soliditySha3 } from 'web3-utils';
-import { parseEther } from '@ethersproject/units';
 import config from '@/config';
 import { isTxReverted } from '@/helpers/utils';
 import { loadTree } from '@/helpers/merkle';
-import totalWeek10 from '@/../reports/10/_totals.json';
+import reports from '@/../reports';
+import Vue from 'vue';
+
+const state = {
+  latestWeek: Object.keys(reports).length
+};
 
 const mutations = {
-  VERIFY_CLAIM_REQUEST() {
-    console.debug('VERIFY_CLAIM_REQUEST');
+  VERIFY_CLAIM_REQUEST: () => console.debug('VERIFY_CLAIM_REQUEST'),
+  VERIFY_CLAIM_SUCCESS: () => console.debug('VERIFY_CLAIM_SUCCESS'),
+  VERIFY_CLAIM_FAILURE: (_state, payload) =>
+    console.debug('VERIFY_CLAIM_FAILURE', payload),
+  GET_CLAIM_STATUS_REQUEST: () => console.debug('GET_CLAIM_STATUS_REQUEST'),
+  GET_CLAIM_STATUS_SUCCESS: () => console.debug('GET_CLAIM_STATUS_SUCCESS'),
+  GET_CLAIM_STATUS_FAILURE: (_state, payload) =>
+    console.debug('GET_CLAIM_STATUS_FAILURE', payload),
+  GET_MERKLE_ROOTS_REQUEST: () => console.debug('GET_MERKLE_ROOTS_REQUEST'),
+  GET_MERKLE_ROOTS_SUCCESS: (_state, payload) => {
+    Vue.set(_state, 'latestWeek', payload);
+    console.debug('GET_MERKLE_ROOTS_SUCCESS');
   },
-  VERIFY_CLAIM_SUCCESS() {
-    console.debug('VERIFY_CLAIM_SUCCESS');
-  },
-  VERIFY_CLAIM_FAILURE(_state, payload) {
-    console.debug('VERIFY_CLAIM_FAILURE', payload);
-  },
-  CLAIM_WEEKS_REQUEST() {
-    console.debug('CLAIM_WEEKS_REQUEST');
-  },
-  CLAIM_WEEKS_SUCCESS() {
-    console.debug('CLAIM_WEEKS_SUCCESS');
-  },
-  CLAIM_WEEKS_FAILURE(_state, payload) {
-    console.debug('CLAIM_WEEKS_FAILURE', payload);
-  },
-  TEST_REQUEST() {
-    console.debug('TEST_REQUEST');
-  },
-  TEST_SUCCESS() {
-    console.debug('TEST_SUCCESS');
-  },
-  TEST_FAILURE(_state, payload) {
-    console.debug('TEST_FAILURE', payload);
-  },
-  GET_UNCLAIMED_WEEKS_REQUEST() {
-    console.debug('GET_UNCLAIMED_WEEKS_REQUEST');
-  },
-  GET_UNCLAIMED_WEEKS_SUCCESS() {
-    console.debug('GET_UNCLAIMED_WEEKS_SUCCESS');
-  },
-  GET_UNCLAIMED_WEEKS_FAILURE(_state, payload) {
-    console.debug('GET_UNCLAIMED_WEEKS_FAILURE', payload);
-  }
+  GET_MERKLE_ROOTS_FAILURE: (_state, payload) =>
+    console.debug('GET_MERKLE_ROOTS_FAILURE', payload),
+  CLAIM_WEEKS_REQUEST: () => console.debug('CLAIM_WEEKS_REQUEST'),
+  CLAIM_WEEKS_SUCCESS: () => console.debug('CLAIM_WEEKS_SUCCESS'),
+  CLAIM_WEEKS_FAILURE: (_state, payload) =>
+    console.debug('CLAIM_WEEKS_FAILURE', payload)
 };
 
 const actions = {
   verifyClaim: async ({ commit, dispatch }, address) => {
     commit('VERIFY_CLAIM_REQUEST');
-    const weekNum = 2;
-    const claimBalance = totalWeek10[address.toLowerCase()];
-    const merkleTree = loadTree(totalWeek10);
+    const weekNum = 1;
+    const claimBalance = reports[weekNum][address.toLowerCase()];
+    const merkleTree = loadTree(reports[weekNum]);
     const proof = merkleTree.getHexProof(
       soliditySha3(address, toWei(claimBalance))
     );
@@ -67,28 +54,28 @@ const actions = {
       commit('VERIFY_CLAIM_FAILURE', e);
     }
   },
-  claimWeeks: async ({ commit, dispatch }, address) => {
+  claimWeeks: async ({ commit, dispatch }, { address, weeks }) => {
     commit('CLAIM_WEEKS_REQUEST');
-    const weekNum = 2;
-    const claimBalance = totalWeek10[address.toLowerCase()];
-    const merkleTree = loadTree(totalWeek10);
-    const proof = merkleTree.getHexProof(
-      soliditySha3(address, toWei(claimBalance))
-    );
-    console.log('Claim payload', {
-      weekNum,
-      claimBalance: toWei(claimBalance),
-      proof
+    let totalClaim = 0;
+    const claims = weeks.map(week => {
+      const claimBalance = reports[week][address.toLowerCase()];
+      const merkleTree = loadTree(reports[week]);
+      const proof = merkleTree.getHexProof(
+        soliditySha3(address, toWei(claimBalance))
+      );
+      totalClaim += parseFloat(claimBalance);
+      return [parseInt(week), toWei(claimBalance), proof];
     });
     try {
       const params = [
         'MerkleRedeem',
         config.addresses.merkleRedeem,
         'claimWeeks',
-        [address, [[weekNum, toWei(claimBalance), proof]]]
+        [address, claims]
       ];
+      console.log('Claim payload', claims);
       const tx = await dispatch('sendTransaction', params);
-      const amountStr = parseFloat(parseFloat(claimBalance).toFixed(6));
+      const amountStr = parseFloat(totalClaim.toFixed(6));
       dispatch('notify', [
         'green',
         `You've successfully claimed ${amountStr} BAL`
@@ -102,50 +89,41 @@ const actions = {
       commit('CLAIM_WEEKS_FAILURE', e);
     }
   },
-  test: async ({ commit, dispatch }, amount) => {
-    commit('TEST_REQUEST');
+  claimStatus: async ({ commit, dispatch }, address) => {
+    commit('GET_CLAIM_STATUS_SUCCESS');
     try {
-      const params = [
-        'Weth',
-        config.addresses.weth,
-        'deposit',
-        [],
-        { value: parseEther(amount) }
-      ];
-      const tx = await dispatch('sendTransaction', params);
-      dispatch('notify', [
-        'green',
-        `You've successfully wrapped ${amount} ether`
-      ]);
-      commit('TEST_SUCCESS');
-      return tx;
-    } catch (e) {
-      if (!e || isTxReverted(e)) return e;
-      dispatch('notify', ['red', 'Ooops, something went wrong']);
-      commit('TEST_FAILURE', e);
-    }
-  },
-  getUnclaimedWeeks: async ({ commit, dispatch }, address) => {
-    const calls: any = [];
-    for (let i = 0; i < 10; i++) {
-      calls.push([
+      let res = await dispatch('call', [
         'MerkleRedeem',
         config.addresses.merkleRedeem,
-        'claimed',
-        [i.toString(), address.toLowerCase()]
+        'claimStatus',
+        [address.toLowerCase(), 1, state.latestWeek]
       ]);
-    }
-    try {
-      const res = await dispatch('multicall', calls);
-      commit('GET_UNCLAIMED_WEEKS_SUCCESS');
+      res = Object.fromEntries(res.map((status, i) => [i + 1, status]));
+      commit('GET_CLAIM_STATUS_SUCCESS');
       return res;
     } catch (e) {
-      commit('GET_UNCLAIMED_WEEKS_FAILURE', e);
+      commit('GET_CLAIM_STATUS_FAILURE', e);
+    }
+  },
+  getMerkleRoots: async ({ commit, dispatch }) => {
+    commit('GET_MERKLE_ROOTS_REQUEST');
+    try {
+      const latestWeek = await dispatch('call', [
+        'MerkleRedeem',
+        config.addresses.merkleRedeem,
+        'merkleRoots',
+        [1, state.latestWeek]
+      ]);
+      commit('GET_MERKLE_ROOTS_SUCCESS', latestWeek);
+      return latestWeek;
+    } catch (e) {
+      commit('GET_MERKLE_ROOTS_FAILURE', e);
     }
   }
 };
 
 export default {
+  state,
   mutations,
   actions
 };
