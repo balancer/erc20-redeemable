@@ -18,7 +18,7 @@ export default {
   methods: {
     ...mapActions(['init'])
   },
-  mounted() {
+  created() {
     this.init();
   }
 };

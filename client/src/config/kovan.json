@@ -4,10 +4,9 @@
   "subgraphUrl": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan",
   "alchemyWsUrl": "wss://eth-kovan.ws.alchemyapi.io/v2/C467LJc7Aa761LLxlcxXvhIG9HzDTtKw",
   "addresses": {
-    "merkleRedeem": "0x96848A8400dF70f54E3c25c26Ba22535a83b8fc5",
+    "merkleRedeem": "0xBaD94480caB9842cc6446285f53bd4F4aeA8835C",
     "migrations": "0x4AE7eBC5d5b1F813D8152aCA9D23260fe9A3465E",
     "tToken": "0x258f59beCB9E9Ef6974Cd6A9b7cAcAf61Bec64F2",
-    "weth": "0xd0A1E359811322d97991E03f863a0C30C2cF029C",
     "multicall": "0x2cc8688C5f75E365aaEEb4ea8D6a480405A48D2A"
   },
   "connectors": {

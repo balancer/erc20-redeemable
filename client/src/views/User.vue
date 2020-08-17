@@ -79,7 +79,7 @@
             </div>
             <UiButton
               @click="handleSubmit"
-              :disabled="!web3.account"
+              :disabled="!web3.account || totalUnclaimed === 0"
               :loading="submitLoading"
               class="d-block width-full button--submit"
             >
@@ -95,7 +95,6 @@
 <script>
 import { mapActions } from 'vuex';
 import reports from '@/../reports';
-import { sleep } from '@/helpers/utils';
 
 export default {
   data() {
@@ -141,26 +140,32 @@ export default {
   },
   async created() {
     this.loading = true;
-    await sleep(500);
-    this.unclaimedWeeks = ['10'];
+    await this.getUnclaimedWeeks();
     this.loading = false;
-    this.input = this.web3.name || this.web3.account;
   },
   methods: {
-    ...mapActions(['resolveName', 'verifyClaim', 'claimWeeks']),
+    ...mapActions(['resolveName', 'verifyClaim', 'claimWeeks', 'claimStatus']),
+    async getUnclaimedWeeks() {
+      const claimStatus = await this.claimStatus(this.address);
+      this.unclaimedWeeks = Object.entries(claimStatus)
+        .filter(status => !status[1])
+        .map(status => status[0]);
+    },
     async handleSubmit() {
       this.submitLoading = true;
       let address = this.address;
       if (address.includes('.eth')) address = await this.resolveName(address);
 
       const isValid = await this.verifyClaim(address);
-      console.log('Verify claim is valid', isValid);
+      console.log('Verify claim', isValid);
 
       if (isValid) {
-        const tx = await this.claimWeeks(address);
-        console.log('Claim', tx);
+        const weeks = this.unclaimedWeeks;
+        const tx = await this.claimWeeks({ address, weeks });
+        console.log('Claim weeks', tx);
       }
       this.submitLoading = false;
+      await this.getUnclaimedWeeks();
     }
   }
 };

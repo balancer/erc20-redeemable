@@ -7,7 +7,6 @@
     "merkleRedeem": "0x123",
     "migrations": "0x123",
     "tToken": "0x123",
-    "weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
   },
   "connectors": {

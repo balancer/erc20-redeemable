@@ -10,7 +10,7 @@
     "start": "vue-cli-service express:run"
   },
   "dependencies": {
-    "@bonustrack/lock": "github:bonustrack/lock#0ec9a1ef0af8774e076aa42e175f7a80885e55f4",
+    "@bonustrack/lock": "github:bonustrack/lock#43ceea243dc4c14cac13ac7b9e6e9aff8b1a60ae",
     "@ethersproject/abi": "^5.0.1",
     "@ethersproject/address": "^5.0.1",
     "@ethersproject/constants": "^5.0.1",
