@@ -14,23 +14,6 @@
         <span v-text="'Network'" class="flex-auto text-gray mr-1" />
         {{ config.network === 'homestead' ? 'mainnet' : config.network }}
       </div>
-      <div class="d-flex">
-        <span v-text="'Block number'" class="flex-auto text-gray mr-1" />
-        <a
-          :href="_etherscanLink(web3.blockNumber, 'block')"
-          target="_blank"
-          class="float-right"
-        >
-          {{ $n(web3.blockNumber) }}
-          <Icon name="external-link" class="ml-1" />
-        </a>
-      </div>
-      <!--
-      <div class="d-flex">
-        <span v-text="'IPFS server'" class="flex-auto text-gray mr-1" />
-        {{ ipfsNode }}
-      </div>
-      -->
     </div>
     <div class="m-4">
       <a
@@ -55,8 +38,7 @@ export default {
   props: ['open'],
   data() {
     return {
-      pkg,
-      ipfsNode: process.env.VUE_APP_IPFS_NODE
+      pkg
     };
   }
 };
