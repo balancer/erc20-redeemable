@@ -31,6 +31,11 @@
                     Week {{ $n(week) }}
                     <Icon name="external-link" class="ml-1" />
                   </a>
+                  <span
+                    v-if="!claimableWeeks.includes(week)"
+                    v-text="'Not yet claimable'"
+                    class="ml-2 text-gray"
+                  />
                 </div>
                 <div>{{ $n(dist) }} BAL</div>
               </div>
