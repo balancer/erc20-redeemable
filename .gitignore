@@ -106,4 +106,4 @@ dist
 
 # RBAC secrets
 /ethereum/.secret.json
-/merkle/secret_kovan.json
+/merkle/secrets_kovan.json
