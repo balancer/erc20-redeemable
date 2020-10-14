@@ -15,6 +15,9 @@ contract("MerkleRedeem", accounts => {
 
   let tbal;
   let TBAL;
+
+  const MAX = utils.toTwosComplement(-1);
+
   // these are deterministic because accounts are deterministic for the ganache mnemonic
   const endingBlockHash =
     "0x76e2419510611ed9dceb203644e997aae76fb195d6420f8bee64368b14303312";
@@ -33,37 +36,24 @@ contract("MerkleRedeem", accounts => {
 
   beforeEach(async () => {
     tbal = await TToken.new("Test Bal", "TBAL", 18);
-    await tbal.mint(admin, utils.toWei("145000"));
+    await tbal.mint(admin, utils.toWei("1450000"));
     TBAL = tbal.address;
 
     redeem = await Redeem.new(TBAL);
     REDEEM = redeem.address;
-    await tbal.transfer(REDEEM, utils.toWei("20000"));
-  });
 
-  it("correctly generates offsets for each user", async () => {
-    let offsetSeconds;
-
-    for (var i = 0; i < 10; i++) {
-      offsetSeconds = await redeem.userWeekOffset(accounts[i], endingBlockHash);
-      assert(
-        offsetSeconds == expectedOffsetSeconds[i],
-        "offset should be " + expectedOffsetSeconds[i] + " seconds"
-      );
-    }
+    await tbal.approve(REDEEM, MAX);
   });
 
   it("stores an allocation", async () => {
     let claimBalance = utils.toWei("9876");
     const lastBlock = await web3.eth.getBlock("latest");
 
-    await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
-
     const elements = [utils.soliditySha3(accounts[0], claimBalance)];
     const merkleTree = new MerkleTree(elements);
     const root = merkleTree.getHexRoot();
 
-    await redeem.seedAllocations(1, root);
+    await redeem.seedAllocations(1, root, utils.toWei("145000"));
 
     const proof = merkleTree.getHexProof(elements[0]);
 
@@ -75,13 +65,11 @@ contract("MerkleRedeem", accounts => {
     let claimBalance = utils.toWei("9876");
     const lastBlock = await web3.eth.getBlock("latest");
 
-    await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
-
     const elements = [utils.soliditySha3(accounts[0], claimBalance)];
     const merkleTree = new MerkleTree(elements);
     const root = merkleTree.getHexRoot();
 
-    await redeem.seedAllocations(1, root);
+    await redeem.seedAllocations(1, root, utils.toWei("145000"));
 
     // construct tree to attempt to override the allocation
     const elements2 = [
@@ -91,13 +79,13 @@ contract("MerkleRedeem", accounts => {
     const merkleTree2 = new MerkleTree(elements);
     const root2 = merkleTree.getHexRoot();
 
-    await truffleAssert.reverts(redeem.seedAllocations(1, root2));
+    await truffleAssert.reverts(
+      redeem.seedAllocations(1, root2, utils.toWei("145000"))
+    );
   });
 
   it("stores multiple allocations", async () => {
     const lastBlock = await web3.eth.getBlock("latest");
-
-    await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
 
     let claimBalance0 = utils.toWei("1000");
     let claimBalance1 = utils.toWei("2000");
@@ -109,7 +97,7 @@ contract("MerkleRedeem", accounts => {
     const merkleTree = new MerkleTree(elements);
     const root = merkleTree.getHexRoot();
 
-    await redeem.seedAllocations(1, root);
+    await redeem.seedAllocations(1, root, utils.toWei("145000"));
 
     let proof0 = merkleTree.getHexProof(elements[0]);
     let result = await redeem.verifyClaim(
@@ -133,7 +121,6 @@ contract("MerkleRedeem", accounts => {
 
     beforeEach(async () => {
       const lastBlock = await web3.eth.getBlock("latest");
-      await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
     });
 
     it("Reverts when the user attempts to claim before an allocation is produced", async () => {
@@ -160,13 +147,11 @@ contract("MerkleRedeem", accounts => {
 
       let lastBlockHash =
         "0x7c1b1e7c2eaddafdf52250cba9679e5b30014a9d86a0e2af17ec4cee24a5fc80";
-      await redeem.finishWeek(1, lastBlock.timestamp, lastBlockHash);
 
-      await redeem.seedAllocations(1, root);
+      await redeem.seedAllocations(1, root, utils.toWei("145000"));
     });
 
-    it("Allows the user to claimWeek once time has passed", async () => {
-      await increaseTime(6);
+    it("Allows the user to claimWeek", async () => {
       let claimedBalance = utils.toWei("1000");
       const merkleProof = merkleTree.getHexProof(elements[0]);
       await redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
@@ -178,17 +163,6 @@ contract("MerkleRedeem", accounts => {
 
       result = await redeem.claimed(1, accounts[1]);
       assert(result == true, "claim should be marked as claimed");
-    });
-
-    it("Reverts when the user attempts to claim prematurely", async () => {
-      await increaseTime(0);
-      let claimedBalance = utils.toWei("1000");
-      const merkleProof = merkleTree.getHexProof(elements[0]);
-      await truffleAssert.reverts(
-        redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
-          from: accounts[1]
-        })
-      );
     });
 
     it("Doesn't allow a user to claim for another user", async () => {
@@ -245,15 +219,13 @@ contract("MerkleRedeem", accounts => {
     beforeEach(async () => {
       let lastBlock = await web3.eth.getBlock("latest");
 
-      await redeem.finishWeek(1, lastBlock.timestamp, lastBlock.hash);
-      await redeem.seedAllocations(1, root1);
+      await redeem.seedAllocations(1, root1, utils.toWei("145000"));
 
       await increaseTime(7);
       lastBlock = await web3.eth.getBlock("latest");
       let lastBlockHash =
         "0xb6801f31f93d990dfe65d67d3479c3853d5fafd7a7f2b8fad9e68084d8d409e0"; // set this manually to simplify testing
-      await redeem.finishWeek(2, lastBlock.timestamp, lastBlockHash);
-      await redeem.seedAllocations(2, root2);
+      await redeem.seedAllocations(2, root2, utils.toWei("145000"));
     });
 
     it("Allows the user to claim once the time has past", async () => {
