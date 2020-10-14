@@ -1,0 +1,43 @@
+{
+  "network": "kovan",
+  "chainId": 42,
+  "subgraphUrl": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan",
+  "alchemyWsUrl": "wss://eth-kovan.ws.alchemyapi.io/v2/C467LJc7Aa761LLxlcxXvhIG9HzDTtKw",
+  "addresses": {
+    "merkleRedeem": "0xBaD94480caB9842cc6446285f53bd4F4aeA8835C",
+    "migrations": "0x4AE7eBC5d5b1F813D8152aCA9D23260fe9A3465E",
+    "tToken": "0x258f59beCB9E9Ef6974Cd6A9b7cAcAf61Bec64F2",
+    "multicall": "0x2cc8688C5f75E365aaEEb4ea8D6a480405A48D2A"
+  },
+  "connectors": {
+    "injected": {
+      "id": "injected",
+      "name": "MetaMask"
+    },
+    "walletconnect": {
+      "id": "walletconnect",
+      "name": "WalletConnect",
+      "options": {
+        "infuraId": "93e3393c76ed4e1f940d0266e2fdbda2"
+      }
+    },
+    "portis": {
+      "id": "portis",
+      "name": "Portis",
+      "options": {
+        "network": "kovan",
+        "dappId": "3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe"
+      }
+    },
+    "walletlink": {
+      "id": "walletlink",
+      "name": "Coinbase",
+      "options": {
+        "appName": "Pool management - Balancer",
+        "darkMode": true,
+        "chainId": 42,
+        "ethJsonrpcUrl": "https://eth-kovan.alchemyapi.io/v2/C467LJc7Aa761LLxlcxXvhIG9HzDTtKw"
+      }
+    }
+  }
+}

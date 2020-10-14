@@ -1,0 +1,43 @@
+{
+  "network": "homestead",
+  "chainId": 1,
+  "subgraphUrl": "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer",
+  "alchemyWsUrl": "wss://eth-mainnet.ws.alchemyapi.io/v2/Q08AP-nlA-yUiQnIiAVlyWK4tbXjRMmD",
+  "addresses": {
+    "merkleRedeem": "0x123",
+    "migrations": "0x123",
+    "tToken": "0x123",
+    "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
+  },
+  "connectors": {
+    "injected": {
+      "id": "injected",
+      "name": "MetaMask"
+    },
+    "walletconnect": {
+      "id": "walletconnect",
+      "name": "WalletConnect",
+      "options": {
+        "infuraId": "93e3393c76ed4e1f940d0266e2fdbda2"
+      }
+    },
+    "portis": {
+      "id": "portis",
+      "name": "Portis",
+      "options": {
+        "network": "mainnet",
+        "dappId": "3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe"
+      }
+    },
+    "walletlink": {
+      "id": "walletlink",
+      "name": "Coinbase",
+      "options": {
+        "appName": "Pool management - Balancer",
+        "darkMode": true,
+        "chainId": 1,
+        "ethJsonrpcUrl": "https://eth-mainnet.alchemyapi.io/v2/Q08AP-nlA-yUiQnIiAVlyWK4tbXjRMmD"
+      }
+    }
+  }
+}
