@@ -105,19 +105,6 @@ const actions = {
       commit('GET_CLAIM_STATUS_FAILURE', e);
     }
   },
-  offsetRequirementMet: async ({ dispatch }, { address, week }) => {
-    try {
-      return await dispatch('call', [
-        'MerkleRedeem',
-        config.addresses.merkleRedeem,
-        'offsetRequirementMet',
-        [address.toLowerCase(), week]
-      ]);
-    } catch (e) {
-      console.error(e);
-      return;
-    }
-  },
   getMerkleRoots: async ({ commit, dispatch }) => {
     commit('GET_MERKLE_ROOTS_REQUEST');
     try {
