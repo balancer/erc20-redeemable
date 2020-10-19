@@ -31,11 +31,6 @@
                     Week {{ $n(week) }}
                     <Icon name="external-link" class="ml-1" />
                   </a>
-                  <span
-                    v-if="!claimableWeeks.includes(week)"
-                    v-text="'Not yet claimable'"
-                    class="ml-2 text-gray"
-                  />
                 </div>
                 <div>{{ $n(dist) }} BAL</div>
               </div>
@@ -100,7 +95,6 @@
 <script>
 import { mapActions } from 'vuex';
 import reports from '@/../reports';
-import { clone } from '@/helpers/utils';
 
 export default {
   data() {
@@ -138,57 +132,35 @@ export default {
       );
     },
     totalUnclaimed() {
-      return Object.entries(this.unclaimed)
-        .filter(report => this.claimableWeeks.includes(report[0]))
-        .reduce((a, b) => a + parseFloat(b[1]), 0);
+      return Object.values(this.unclaimed).reduce(
+        (a, b) => a + parseFloat(b),
+        0
+      );
     }
   },
   async created() {
     this.loading = true;
     await this.getUnclaimedWeeks();
-    await this.getClaimableWeeks();
     this.loading = false;
   },
   methods: {
-    ...mapActions([
-      'resolveName',
-      'verifyClaim',
-      'claimWeeks',
-      'claimStatus',
-      'offsetRequirementMet'
-    ]),
+    ...mapActions(['claimWeeks', 'claimStatus']),
     async getUnclaimedWeeks() {
       const claimStatus = await this.claimStatus(this.address);
       this.unclaimedWeeks = Object.entries(claimStatus)
         .filter(status => !status[1])
         .map(status => status[0]);
     },
-    async getClaimableWeeks() {
-      if (this.unclaimedWeeks.length === 0) return;
-      const claimableWeeks = clone(this.unclaimedWeeks);
-      const lastWeek = claimableWeeks[claimableWeeks.length - 1];
-      const offsetRequirementMet = await this.offsetRequirementMet({
-        address: this.address,
-        week: parseInt(lastWeek)
-      });
-      if (!offsetRequirementMet) claimableWeeks.pop();
-      this.claimableWeeks = claimableWeeks;
-    },
     async handleSubmit() {
       this.submitLoading = true;
-      let address = this.address;
-      if (address.includes('.eth')) address = await this.resolveName(address);
-
-      const isValid = await this.verifyClaim(address);
-      console.log('Verify claim', isValid);
-
-      if (isValid) {
-        const weeks = this.claimableWeeks;
-        const tx = await this.claimWeeks({ address, weeks });
-        console.log('Claim weeks', tx);
-      }
-      this.submitLoading = false;
-      await this.getUnclaimedWeeks();
+      const weeks = Object.keys(this.unclaimed);
+      setTimeout(() => {
+        this.claimWeeks({ address: this.address, weeks }).then(tx => {
+          console.log('Claim weeks', tx);
+          this.submitLoading = false;
+          this.getUnclaimedWeeks();
+        });
+      }, 10);
     }
   }
 };
