@@ -6,8 +6,8 @@
           <div class="flex-auto d-flex flex-items-center">
             <router-link
               :to="{ name: 'home' }"
-              class="d-inline-block text-blue d-flex"
-              style="padding-top: 2px;"
+              class="d-inline-block text-blue d-flex text-white"
+              style="font-size: 24px; padding-top: 4px;"
             >
               <img
                 src="~/@/assets/logo.svg"
@@ -15,6 +15,7 @@
                 width="32"
                 height="32"
               />
+              <span v-text="'Balancer'" class="hide-sm" />
             </router-link>
           </div>
           <div :key="web3.account">

@@ -13,6 +13,17 @@
           <div class="px-4 px-md-0">
             <h1 class="mb-3">{{ _shorten(address) }}</h1>
           </div>
+          <a
+            target="_blank"
+            :href="_etherscanLink(txHash, 'tx')"
+            v-if="txHash"
+            class="p-4 bg-green text-white d-block rounded-0 rounded-md-2 mb-4 overflow-hidden"
+          >
+            <p class="mb-0">
+              See transaction on Etherscan {{ _shorten(txHash) }}
+              <Icon name="external-link" class="ml-1" />
+            </p>
+          </a>
           <Block :slim="true" title="Pending BAL">
             <div class="overflow-hidden">
               <div
@@ -38,7 +49,7 @@
                 v-if="Object.keys(unclaimed).length === 0"
                 class="p-4 m-0 d-block"
               >
-                There isn't any pending BAL here yet!
+                There isn't any pending BAL here.
               </p>
             </div>
           </Block>
@@ -103,7 +114,8 @@ export default {
       loading: false,
       loaded: false,
       submitLoading: false,
-      unclaimedWeeks: []
+      unclaimedWeeks: [],
+      txHash: false
     };
   },
   computed: {
@@ -158,6 +170,7 @@ export default {
         this.claimWeeks({ address: this.address, weeks }).then(tx => {
           console.log('Claim weeks', tx);
           this.submitLoading = false;
+          this.txHash = tx.hash;
           this.getUnclaimedWeeks();
         });
       }, 10);

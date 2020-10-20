@@ -69,7 +69,7 @@ export default {
     this.lastDist = Object.fromEntries(
       Object.entries(lastDist)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
+        .slice(0, 10)
     );
   },
   computed: {

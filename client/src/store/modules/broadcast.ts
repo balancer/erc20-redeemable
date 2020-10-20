@@ -1,4 +1,5 @@
 import { toWei, soliditySha3 } from 'web3-utils';
+import numeral from 'numeral';
 import config from '@/config';
 import { isTxReverted } from '@/helpers/utils';
 import { loadTree } from '@/helpers/merkle';
@@ -75,11 +76,8 @@ const actions = {
       ];
       console.log('Claim payload', claims);
       const tx = await dispatch('sendTransaction', params);
-      const amountStr = parseFloat(totalClaim.toFixed(6));
-      dispatch('notify', [
-        'green',
-        `You've successfully claimed ${amountStr} BAL`
-      ]);
+      const amountStr = numeral(totalClaim).format('(0.[00]a)');
+      dispatch('notify', ['green', `You've just claimed ${amountStr} BAL!`]);
       commit('CLAIM_WEEKS_SUCCESS');
       return tx;
     } catch (e) {

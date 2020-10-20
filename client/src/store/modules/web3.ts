@@ -16,7 +16,6 @@ const state = {
   injectedChainId: null,
   account: null,
   name: null,
-  active: false,
   balances: {}
 };
 
@@ -26,7 +25,6 @@ const mutations = {
     Vue.set(_state, 'injectedChainId', null);
     Vue.set(_state, 'account', null);
     Vue.set(_state, 'name', null);
-    Vue.set(_state, 'active', false);
     Vue.set(_state, 'balances', {});
     console.debug('LOGOUT');
   },
@@ -53,7 +51,6 @@ const mutations = {
     Vue.set(_state, 'injectedLoaded', false);
     Vue.set(_state, 'injectedChainId', null);
     Vue.set(_state, 'account', null);
-    Vue.set(_state, 'active', false);
     console.debug('LOAD_PROVIDER_FAILURE', payload);
   },
   LOAD_BACKUP_PROVIDER_REQUEST() {
@@ -67,7 +64,6 @@ const mutations = {
     Vue.set(_state, 'backUpLoaded', false);
     Vue.set(_state, 'account', null);
     Vue.set(_state, 'activeChainId', null);
-    Vue.set(_state, 'active', false);
     console.debug('LOAD_BACKUP_PROVIDER_FAILURE', payload);
   },
   HANDLE_CHAIN_CHANGED() {
@@ -158,16 +154,6 @@ const actions = {
       await dispatch('loadProvider');
       await dispatch('lookupAddress');
       commit('LOAD_WEB3_SUCCESS');
-      if (!state.injectedLoaded || state.injectedChainId !== config.chainId) {
-        await dispatch('loadBackupProvider');
-      } else {
-        /**
-        this.providerStatus.activeChainId = this.providerStatus.injectedChainId;
-        this.providerStatus.injectedActive = true;
-        if (this.providerStatus.account)
-          this.fetchUserBlockchainData(this.providerStatus.account);
-        */
-      }
     } catch (e) {
       commit('LOAD_WEB3_FAILURE', e);
       return Promise.reject();
@@ -178,15 +164,9 @@ const actions = {
     try {
       provider.removeAllListeners();
       if (provider.on) {
-        provider.on('chainChanged', async () => {
-          commit('HANDLE_CHAIN_CHANGED');
-          if (state.active) {
-            await dispatch('loadWeb3');
-          }
-        });
         provider.on('accountsChanged', async accounts => {
           if (accounts.length === 0) {
-            if (state.active) await dispatch('loadWeb3');
+            await dispatch('loadWeb3');
           } else {
             commit('HANDLE_ACCOUNTS_CHANGED', accounts[0]);
             await dispatch('loadWeb3');
@@ -194,13 +174,12 @@ const actions = {
         });
         provider.on('close', async () => {
           commit('HANDLE_CLOSE');
-          if (state.active) await dispatch('loadWeb3');
+          await dispatch('logout');
         });
         provider.on('networkChanged', async () => {
           commit('HANDLE_NETWORK_CHANGED');
-          if (state.active) {
-            await dispatch('loadWeb3');
-          }
+          await dispatch('logout');
+          await dispatch('login');
         });
       }
       const network = await web3.getNetwork();
@@ -217,22 +196,8 @@ const actions = {
       return Promise.reject();
     }
   },
-  loadBackupProvider: async ({ commit }) => {
-    try {
-      web3 = wsProvider;
-      const network = await wsProvider.getNetwork();
-      commit('LOAD_BACKUP_PROVIDER_SUCCESS', {
-        injectedActive: false,
-        backUpLoaded: true,
-        account: null,
-        activeChainId: network.chainId
-      });
-    } catch (e) {
-      commit('LOAD_BACKUP_PROVIDER_FAILURE', e);
-      return Promise.reject();
-    }
-  },
   lookupAddress: async ({ commit }) => {
+    if (state.injectedChainId !== 1) return;
     commit('LOOKUP_ADDRESS_REQUEST');
     try {
       const name = await web3.lookupAddress(state.account);
