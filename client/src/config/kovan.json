@@ -1,7 +1,7 @@
 {
   "network": "kovan",
   "chainId": 42,
-  "alchemyWsUrl": "wss://eth-kovan.ws.alchemyapi.io/v2/C467LJc7Aa761LLxlcxXvhIG9HzDTtKw",
+  "alchemyWsUrl": "wss://eth-kovan.ws.alchemyapi.io/v2/YUqQXLI0vvfq9EOkeymTDG4cwvUldKI5",
   "addresses": {
     "merkleRedeem": "0x3bc73D276EEE8cA9424Ecb922375A0357c1833B3",
     "multicall": "0x2cc8688C5f75E365aaEEb4ea8D6a480405A48D2A"
