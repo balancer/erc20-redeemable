@@ -12,7 +12,7 @@ const state = {
   loading: false,
   snapshot: {},
   reports: {},
-  latestWeek: 3,
+  latestWeek: 0,
   latestReport: {}
 };
 
@@ -43,10 +43,14 @@ const actions = {
     const connector = await Vue.prototype.$auth.getConnector();
     if (connector) await dispatch('login', connector);
     const snapshot = await getSnapshot();
-    const [[latestWeek, latestWeekIpfsHash]]: any = Object.entries(
-      snapshot
-    ).slice(-1);
-    const latestReport = await ipfs.get(latestWeekIpfsHash);
+    let latestWeek = 0;
+    let latestReport = {};
+    if (Object.keys(snapshot).length > 0) {
+      const result: any = Object.entries(snapshot).slice(-1);
+      latestWeek = result[0][0];
+      const latestWeekIpfsHash = result[0][1];
+      latestReport = await ipfs.get(latestWeekIpfsHash);
+    }
     commit('SET', {
       loading: false,
       init: true,

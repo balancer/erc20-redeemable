@@ -5,7 +5,7 @@ import { getAddress } from '@ethersproject/address';
 import { Interface } from '@ethersproject/abi';
 import abi from '@/helpers/abi';
 import config from '@/config';
-import wsProvider from '@/helpers/ws';
+import wsProvider from '@/helpers/provider';
 import { isTxRejected } from '@/helpers/utils';
 
 let provider;

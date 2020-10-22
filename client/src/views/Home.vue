@@ -26,29 +26,31 @@
         </form>
       </Block>
     </Container>
-    <Container>
-      <h2 class="mb-3">Top 10 this week</h2>
-    </Container>
-    <Container :slim="true">
-      <Block :slim="true">
-        <div class="d-flex px-4 py-3 bg-gray-dark">
-          <div v-text="'Address'" class="flex-auto" />
-          <div v-text="'Amount'" />
-        </div>
-        <div>
-          <div
-            v-for="(dist, address) in lastDist"
-            :key="address"
-            class="d-flex px-4 py-3 border-top text-white"
-          >
-            <div class="flex-auto">
-              <User :address="address" />
-            </div>
-            <div>{{ $n(dist) }} BAL</div>
+    <div v-if="Object.keys(lastDist).length > 0">
+      <Container>
+        <h2 class="mb-3">Top 10 this week</h2>
+      </Container>
+      <Container :slim="true">
+        <Block :slim="true">
+          <div class="d-flex px-4 py-3 bg-gray-dark">
+            <div v-text="'Address'" class="flex-auto" />
+            <div v-text="'Amount'" />
           </div>
-        </div>
-      </Block>
-    </Container>
+          <div>
+            <div
+              v-for="(dist, address) in lastDist"
+              :key="address"
+              class="d-flex px-4 py-3 border-top text-white"
+            >
+              <div class="flex-auto">
+                <User :address="address" />
+              </div>
+              <div>{{ $n(dist) }} BAL</div>
+            </div>
+          </div>
+        </Block>
+      </Container>
+    </div>
   </div>
 </template>
 

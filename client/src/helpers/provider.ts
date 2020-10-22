@@ -1,6 +1,6 @@
 import { WebSocketProvider } from '@ethersproject/providers';
 import config from '@/config';
 
-const wsProvider = new WebSocketProvider(config.alchemyWsUrl);
+const provider = new WebSocketProvider(config.alchemyWsUrl);
 
-export default wsProvider;
+export default provider;
