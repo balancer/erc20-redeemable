@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import config from '@/config';
 import ipfs from '@/helpers/ipfs';
 import pkg from '@/../package.json';
@@ -82,6 +83,10 @@ export async function getSnapshot() {
   );
 }
 
-export async function loadReports(snapshot, weeks) {
-  return await Promise.all(weeks.map(week => ipfs.get(snapshot[week])));
+export async function getReports(snapshot, weeks) {
+  const reports = {};
+  for (const week of weeks) {
+    reports[week] = await ipfs.get(snapshot[week]);
+  }
+  return reports;
 }

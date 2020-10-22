@@ -105,7 +105,6 @@
 
 <script>
 import { mapActions } from 'vuex';
-import reports from '@/../reports';
 
 export default {
   data() {
@@ -121,7 +120,7 @@ export default {
   computed: {
     unclaimed() {
       return Object.fromEntries(
-        Object.entries(reports)
+        Object.entries(this.app.reports)
           .map(report => [
             report[0],
             report[1][this.address.toLowerCase()] || 0
@@ -133,7 +132,7 @@ export default {
     },
     claimed() {
       return Object.fromEntries(
-        Object.entries(reports)
+        Object.entries(this.app.reports)
           .map(report => [
             report[0],
             report[1][this.address.toLowerCase()] || 0
@@ -153,10 +152,11 @@ export default {
   async created() {
     this.loading = true;
     await this.getUnclaimedWeeks();
+    await this.loadReports(this.unclaimedWeeks);
     this.loading = false;
   },
   methods: {
-    ...mapActions(['claimWeeks', 'claimStatus']),
+    ...mapActions(['claimWeeks', 'claimStatus', 'loadReports']),
     async getUnclaimedWeeks() {
       const claimStatus = await this.claimStatus(this.address);
       this.unclaimedWeeks = Object.entries(claimStatus)
