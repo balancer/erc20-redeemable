@@ -1,8 +1,14 @@
 import Vue from 'vue';
+import { getSnapshot } from '@/helpers/utils';
+import ipfs from '@/helpers/ipfs';
+import reports from '@/../reports';
 
 const state = {
   init: false,
-  loading: false
+  loading: false,
+  snapshot: {},
+  reports,
+  latestReport: {}
 };
 
 const mutations = {
@@ -18,7 +24,16 @@ const actions = {
     commit('SET', { loading: true });
     const connector = await Vue.prototype.$auth.getConnector();
     if (connector) await dispatch('login', connector);
-    commit('SET', { loading: false, init: true });
+    const snapshot = await getSnapshot();
+    const latestWeek: any = Object.values(snapshot).slice(-1);
+    const latestReport = await ipfs.get(latestWeek);
+    commit('SET', {
+      loading: false,
+      init: true,
+      snapshot,
+      latestWeek,
+      latestReport
+    });
   },
   loading: ({ commit }, payload) => {
     commit('SET', { loading: payload });

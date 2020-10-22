@@ -54,7 +54,6 @@
 
 <script>
 import { isAddress } from '@ethersproject/address';
-import reports from '@/../reports';
 
 export default {
   data() {
@@ -65,9 +64,8 @@ export default {
   },
   created() {
     this.input = this.web3.account;
-    const lastDist = Object.entries(reports).slice(-1)[0][1];
     this.lastDist = Object.fromEntries(
-      Object.entries(lastDist)
+      Object.entries(this.app.latestReport)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
     );

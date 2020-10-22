@@ -1,4 +1,5 @@
 import config from '@/config';
+import ipfs from '@/helpers/ipfs';
 import pkg from '@/../package.json';
 
 export function shorten(str = '') {
@@ -71,4 +72,16 @@ export const isTxRejected = error => {
 
 export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function getSnapshot() {
+  const networkStr = config.chainId === 1 ? '' : '-kovan';
+  return await ipfs.get(
+    `balancer-team-bucket.storage.fleek.co/balancer-claim${networkStr}/snapshot`,
+    'ipns'
+  );
+}
+
+export async function loadReports(snapshot, weeks) {
+  return await Promise.all(weeks.map(week => ipfs.get(snapshot[week])));
 }
