@@ -66,8 +66,9 @@ const actions = {
     commit('CLAIM_WEEKS_REQUEST');
     let totalClaim = 0;
     const claims = weeks.map(week => {
-      const claimBalance = state.reports[week][address.toLowerCase()];
+      const claimBalance = state.reports[week][address];
       const merkleTree = loadTree(state.reports[week]);
+
       const proof = merkleTree.getHexProof(
         soliditySha3(address, toWei(claimBalance))
       );

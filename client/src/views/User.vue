@@ -110,7 +110,7 @@ import { getAddress } from '@ethersproject/address';
 export default {
   data() {
     return {
-      address: this.$router.currentRoute.params.address,
+      address: getAddress(this.$router.currentRoute.params.address),
       loading: false,
       loaded: false,
       submitLoading: false,
@@ -122,7 +122,7 @@ export default {
     unclaimed() {
       return Object.fromEntries(
         Object.entries(this.app.reports)
-          .map(report => [report[0], report[1][getAddress(this.address)] || 0])
+          .map(report => [report[0], report[1][this.address] || 0])
           .filter(
             report => this.unclaimedWeeks.includes(report[0]) && report[1] > 0
           )
@@ -131,7 +131,7 @@ export default {
     claimed() {
       return Object.fromEntries(
         Object.entries(this.app.reports)
-          .map(report => [report[0], report[1][getAddress(this.address)] || 0])
+          .map(report => [report[0], report[1][this.address] || 0])
           .filter(
             report => !this.unclaimedWeeks.includes(report[0]) && report[1] > 0
           )
