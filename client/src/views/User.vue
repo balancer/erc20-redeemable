@@ -105,11 +105,12 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { getAddress } from '@ethersproject/address';
 
 export default {
   data() {
     return {
-      address: this.$router.currentRoute.params.address,
+      address: getAddress(this.$router.currentRoute.params.address),
       loading: false,
       loaded: false,
       submitLoading: false,
@@ -121,10 +122,7 @@ export default {
     unclaimed() {
       return Object.fromEntries(
         Object.entries(this.app.reports)
-          .map(report => [
-            report[0],
-            report[1][this.address.toLowerCase()] || 0
-          ])
+          .map(report => [report[0], report[1][this.address] || 0])
           .filter(
             report => this.unclaimedWeeks.includes(report[0]) && report[1] > 0
           )
@@ -133,10 +131,7 @@ export default {
     claimed() {
       return Object.fromEntries(
         Object.entries(this.app.reports)
-          .map(report => [
-            report[0],
-            report[1][this.address.toLowerCase()] || 0
-          ])
+          .map(report => [report[0], report[1][this.address] || 0])
           .filter(
             report => !this.unclaimedWeeks.includes(report[0]) && report[1] > 0
           )
@@ -159,6 +154,7 @@ export default {
     ...mapActions(['claimWeeks', 'claimStatus', 'loadReports']),
     async getUnclaimedWeeks() {
       const claimStatus = await this.claimStatus(this.address);
+      console.log('Claim status', claimStatus);
       this.unclaimedWeeks = Object.entries(claimStatus)
         .filter(status => !status[1])
         .map(status => status[0]);
