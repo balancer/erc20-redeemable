@@ -17,6 +17,10 @@ export default {
     ...mapState(modules)
   },
   methods: {
+    _week(week) {
+      const offset = config.network === 'homestead' ? 20 : 0;
+      return parseInt(week) + offset;
+    },
     _numeral(number, format = '(0.[00]a)') {
       return numeral(number).format(format);
     },

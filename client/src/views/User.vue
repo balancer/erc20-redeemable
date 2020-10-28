@@ -35,11 +35,13 @@
                 <div class="flex-auto">
                   <a
                     :href="
-                      `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${week}/_totals.json`
+                      `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${_week(
+                        week
+                      )}/_totals.json`
                     "
                     target="_blank"
                   >
-                    Week {{ $n(week) }}
+                    Week {{ $n(_week(week)) }}
                     <Icon name="external-link" class="ml-1" />
                   </a>
                 </div>
@@ -68,11 +70,13 @@
                 <div class="flex-auto">
                   <a
                     :href="
-                      `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${week}/_totals.json`
+                      `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${_week(
+                        week
+                      )}/_totals.json`
                     "
                     target="_blank"
                   >
-                    Week {{ $n(week) }}
+                    Week {{ $n(_week(week)) }}
                     <Icon name="external-link" class="ml-1" />
                   </a>
                 </div>
