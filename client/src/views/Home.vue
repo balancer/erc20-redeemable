@@ -72,6 +72,11 @@ export default {
         .slice(0, 10)
     );
   },
+  watch: {
+    'web3.account': function() {
+      this.input = this.web3.account;
+    }
+  },
   computed: {
     isValid() {
       if (!this.input) return true;
