@@ -23,7 +23,7 @@ contract("MerkleRedeem - High Volume", accounts => {
     await tbal.mint(admin, utils.toWei("1450000"));
     TBAL = tbal.address;
 
-    redeem = await Redeem.new(TBAL);
+    redeem = await Redeem.new([TBAL]);
     REDEEM = redeem.address;
 
     await tbal.approve(REDEEM, MAX);
@@ -42,11 +42,12 @@ contract("MerkleRedeem - High Volume", accounts => {
     const merkleTree = new MerkleTree(elements);
     const root = merkleTree.getHexRoot();
 
-    await redeem.seedAllocations(1, root, utils.toWei("145000"));
+    await redeem.seedAllocations(TBAL, 1, root, utils.toWei("145000"));
 
     const proof36 = merkleTree.getHexProof(elements[36]);
     let result = await redeem.verifyClaim(
       addresses[36],
+      TBAL,
       1,
       utils.toWei("360"),
       proof36
@@ -56,6 +57,7 @@ contract("MerkleRedeem - High Volume", accounts => {
     const proof48 = merkleTree.getHexProof(elements[48]);
     result = await redeem.verifyClaim(
       addresses[48],
+      TBAL,
       1,
       utils.toWei("480"),
       proof48
@@ -97,25 +99,25 @@ contract("MerkleRedeem - High Volume", accounts => {
     beforeEach(async () => {
       let lastBlock = await web3.eth.getBlock("latest");
 
-      await redeem.seedAllocations(1, root1, utils.toWei("145000"));
+      await redeem.seedAllocations(TBAL, 1, root1, utils.toWei("145000"));
 
       await increaseTime(7);
       lastBlock = await web3.eth.getBlock("latest");
       let lastBlockHash =
         "0xb6801f31f93d990dfe65d67d3479c3853d5fafd7a7f2b8fad9e68084d8d409e0"; // set this manually to simplify testing
-      await redeem.seedAllocations(2, root2, utils.toWei("145000"));
+      await redeem.seedAllocations(TBAL, 2, root2, utils.toWei("145000"));
 
       await increaseTime(7);
       lastBlock = await web3.eth.getBlock("latest");
-      await redeem.seedAllocations(3, root3, utils.toWei("145000"));
+      await redeem.seedAllocations(TBAL, 3, root3, utils.toWei("145000"));
 
       await increaseTime(7);
       lastBlock = await web3.eth.getBlock("latest");
-      await redeem.seedAllocations(4, root4, utils.toWei("145000"));
+      await redeem.seedAllocations(TBAL, 4, root4, utils.toWei("145000"));
 
       await increaseTime(7);
       lastBlock = await web3.eth.getBlock("latest");
-      await redeem.seedAllocations(5, root5, utils.toWei("145000"));
+      await redeem.seedAllocations(TBAL, 5, root5, utils.toWei("145000"));
     });
 
     it("Allows the user to claim multiple weeks at once", async () => {
@@ -129,6 +131,7 @@ contract("MerkleRedeem - High Volume", accounts => {
 
       await redeem.claimWeeks(
         accounts[1],
+        TBAL,
         [
           [1, claimBalance1, proof1],
           [2, claimBalance2, proof2],
