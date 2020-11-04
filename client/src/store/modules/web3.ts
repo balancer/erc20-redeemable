@@ -162,7 +162,7 @@ const actions = {
   loadProvider: async ({ commit, dispatch }) => {
     commit('LOAD_PROVIDER_REQUEST');
     try {
-      provider.removeAllListeners();
+      if (provider.removeAllListeners) provider.removeAllListeners();
       if (provider.on) {
         provider.on('accountsChanged', async accounts => {
           if (accounts.length === 0) {
