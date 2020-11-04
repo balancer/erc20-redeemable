@@ -45,18 +45,21 @@ const actions = {
     const snapshot = await getSnapshot();
     let latestWeek = 0;
     let latestReport = {};
+    const reports = {};
     if (Object.keys(snapshot).length > 0) {
       const result: any = Object.entries(snapshot).slice(-1);
       latestWeek = result[0][0];
       const latestWeekIpfsHash = result[0][1];
       latestReport = await ipfs.get(latestWeekIpfsHash);
+      reports[latestWeek] = latestReport;
     }
     commit('SET', {
       loading: false,
       init: true,
       snapshot,
       latestWeek,
-      latestReport
+      latestReport,
+      reports
     });
   },
   loading: ({ commit }, payload) => {
@@ -68,6 +71,9 @@ const actions = {
     const claims = weeks.map(week => {
       const claimBalance = state.reports[week][address];
       const merkleTree = loadTree(state.reports[week]);
+
+      // Get merkle root
+      console.log(week, merkleTree.getHexRoot());
 
       const proof = merkleTree.getHexProof(
         soliditySha3(address, toWei(claimBalance))

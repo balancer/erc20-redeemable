@@ -30,10 +30,10 @@
       "id": "walletlink",
       "name": "Coinbase",
       "options": {
-        "appName": "Pool management - Balancer",
+        "appName": "Balancer claim",
         "darkMode": true,
         "chainId": 1,
-        "ethJsonrpcUrl": "https://eth-mainnet.alchemyapi.io/v2/Q08AP-nlA-yUiQnIiAVlyWK4tbXjRMmD"
+        "ethJsonrpcUrl": "https://eth-mainnet.alchemyapi.io/v2/yGUdqppFjRS4RCoh6MQhfc3gt0JatmIG"
       }
     }
   }
