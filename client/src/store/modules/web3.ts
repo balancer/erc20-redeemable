@@ -152,7 +152,7 @@ const actions = {
     commit('LOAD_WEB3_REQUEST');
     try {
       await dispatch('loadProvider');
-      await dispatch('lookupAddress');
+      dispatch('lookupAddress');
       commit('LOAD_WEB3_SUCCESS');
     } catch (e) {
       commit('LOAD_WEB3_FAILURE', e);
