@@ -2,7 +2,6 @@
   "network": "homestead",
   "chainId": 1,
   "rpcUrl": "https://cloudflare-eth.com",
-  "wsUrl": "wss://eth-mainnet.ws.alchemyapi.io/v2/yGUdqppFjRS4RCoh6MQhfc3gt0JatmIG",
   "addresses": {
     "merkleRedeem": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"

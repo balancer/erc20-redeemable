@@ -1,6 +1,6 @@
-import { WebSocketProvider } from '@ethersproject/providers';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import config from '@/config';
 
-const provider = new WebSocketProvider(config.wsUrl);
+const provider = new JsonRpcProvider(config.rpcUrl);
 
 export default provider;

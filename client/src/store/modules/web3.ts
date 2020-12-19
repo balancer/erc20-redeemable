@@ -5,7 +5,7 @@ import { getAddress } from '@ethersproject/address';
 import { Interface } from '@ethersproject/abi';
 import abi from '@/helpers/abi';
 import config from '@/config';
-import wsProvider from '@/helpers/provider';
+import rpcProvider from '@/helpers/provider';
 import { isTxRejected } from '@/helpers/utils';
 
 let provider;
@@ -250,7 +250,7 @@ const actions = {
       const contract = new Contract(
         getAddress(contractAddress),
         abi[contractType],
-        wsProvider
+        rpcProvider
       );
       const res = !params
         ? await contract[action]()
@@ -267,7 +267,7 @@ const actions = {
     const multi = new Contract(
       config.addresses.multicall,
       abi['Multicall'],
-      wsProvider
+      rpcProvider
     );
     const calls: any = [];
     payload.forEach(call => {
