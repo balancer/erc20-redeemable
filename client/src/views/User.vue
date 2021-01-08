@@ -167,12 +167,16 @@ export default {
       this.submitLoading = true;
       const weeks = Object.keys(this.unclaimed);
       setTimeout(async () => {
-        const tx = await this.claimWeeks({ address: this.address, weeks });
-        console.log('Claim weeks', tx);
-        await tx.wait(1);
-        await this.getUnclaimedWeeks();
-        this.submitLoading = false;
-        this.txHash = tx.hash;
+        try {
+          const tx = await this.claimWeeks({ address: this.address, weeks });
+          console.log('Claim weeks', tx);
+          await tx.wait(1);
+          await this.getUnclaimedWeeks();
+          this.submitLoading = false;
+          this.txHash = tx.hash;
+        } catch (e) {
+          this.submitLoading = false;
+        }
       }, 10);
     }
   }
