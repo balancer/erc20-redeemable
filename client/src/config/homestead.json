@@ -1,7 +1,7 @@
 {
   "network": "homestead",
   "chainId": 1,
-  "rpcUrl": "https://cloudflare-eth.com",
+  "rpcUrl": "https://mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
   "addresses": {
     "merkleRedeem": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
