@@ -77,12 +77,19 @@ export function sleep(ms) {
 
 export async function getSnapshot() {
   const networkStr = config.chainId === 1 ? '' : '-kovan';
-  return (
-    (await ipfs.get(
-      `balancer-team-bucket.storage.fleek.co/balancer-claim${networkStr}/snapshot`,
-      'ipns'
-    )) || {}
+
+  const claim = await fetch(
+    `https://storageapi.fleek.co/balancer-team-bucket/balancer-claim${networkStr}/snapshot`
   );
+  const res = await claim.json();
+
+  return res;
+  // return (
+  //   (await ipfs.get(
+  //     `balancer-team-bucket.storage.fleek.co/balancer-claim${networkStr}/snapshot`,
+  //     'ipns'
+  //   )) || {}
+  // );
 }
 
 export async function getReports(snapshot, weeks) {
