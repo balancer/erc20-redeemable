@@ -5,10 +5,13 @@
 </p>
 
 
-## ERC20-Redeem
+## MetaGame SEED Merkle Redemption App
 
-This project implements a smart contract that distributes token rewards to participants throughout a week-long interval.
-Admins add token allocations for each user to the contract, which then become claimable in the form of ERC20 tokens across the week, ensuring that a large distribution doesn't upset the market.
+This project implements a smart contract that distributes token rewards to participants throughout multiple intervals.
+Admins add token allocations for each user to the contract, which then become claimable in the form of ERC20 tokens, ensuring that large token distributions can remain gas efficient.
+
+### The following is copied from the README of the Balancer Labs repo that this was built off of, leaving it here for context:
+
 
 ## Context
 
