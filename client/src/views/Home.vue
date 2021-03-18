@@ -2,7 +2,7 @@
   <div class="pt-2">
     <Container :slim="true">
       <Block class="text-center py-4">
-        <h1 class="mb-2">Claim BAL</h1>
+        <h1 class="mb-2">Claim SEED</h1>
         <form
           @submit.prevent="handleSubmit"
           style="max-width: 460px;"
@@ -45,7 +45,7 @@
               <div class="flex-auto">
                 <User :address="address" />
               </div>
-              <div>{{ $n(dist) }} BAL</div>
+              <div>{{ $n(dist) }} SEED</div>
             </div>
           </div>
         </Block>

@@ -78,9 +78,11 @@ const actions = {
       const proof = merkleTree.getHexProof(
         soliditySha3(address, toWei(claimBalance))
       );
+
       totalClaim += parseFloat(claimBalance);
       return [parseInt(week), toWei(claimBalance), proof];
     });
+
     try {
       const params = [
         'MerkleRedeem',
@@ -89,9 +91,10 @@ const actions = {
         [address, claims]
       ];
       console.log('Claim payload', claims);
+
       const tx = await dispatch('sendTransaction', params);
       const amountStr = numeral(totalClaim).format('(0.[00]a)');
-      dispatch('notify', ['green', `You've just claimed ${amountStr} BAL!`]);
+      dispatch('notify', ['green', `You've just claimed ${amountStr} SEED!`]);
       commit('CLAIM_WEEKS_SUCCESS');
       return tx;
     } catch (e) {

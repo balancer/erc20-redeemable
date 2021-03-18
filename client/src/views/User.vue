@@ -24,7 +24,7 @@
               <Icon name="external-link" class="ml-1" />
             </p>
           </a>
-          <Block :slim="true" title="Pending BAL">
+          <Block :slim="true" title="Pending SEED">
             <div class="overflow-hidden">
               <div
                 v-for="(dist, week, i) in unclaimed"
@@ -45,20 +45,20 @@
                     <Icon name="external-link" class="ml-1" />
                   </a>
                 </div>
-                <div>{{ $n(dist) }} BAL</div>
+                <div>{{ $n(dist) }} SEED</div>
               </div>
               <p
                 v-if="Object.keys(unclaimed).length === 0"
                 class="p-4 m-0 d-block"
               >
-                There isn't any pending BAL here.
+                There isn't any pending SEED here.
               </p>
             </div>
           </Block>
           <Block
             v-if="Object.keys(claimed).length > 0"
             :slim="true"
-            title="Claimed BAL"
+            title="Claimed SEED"
           >
             <div class="overflow-hidden">
               <div
@@ -80,16 +80,16 @@
                     <Icon name="external-link" class="ml-1" />
                   </a>
                 </div>
-                <div>{{ $n(dist) }} BAL</div>
+                <div>{{ $n(dist) }} SEED</div>
               </div>
             </div>
           </Block>
         </div>
         <div class="col-12 col-lg-4 float-left">
-          <Block title="Total pending BAL">
+          <Block title="Total pending SEED">
             <div class="mb-2">
               <UiButton class="width-full mb-2">
-                {{ $n(totalUnclaimed) }} BAL
+                {{ $n(totalUnclaimed) }} SEED
               </UiButton>
             </div>
             <UiButton

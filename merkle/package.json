@@ -9,6 +9,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
+    "dotenv": "8.2.0",
     "eslint": "^6.1.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-babel": "^4.1.2",
@@ -23,7 +24,8 @@
     "node-fetch": "^2.6.1",
     "prettier": "1.14.3",
     "solium": "^1.1.8",
-    "truffle-assertions": "^0.9.2"
+    "truffle-assertions": "^0.9.2",
+    "truffle-plugin-verify": "^0.5.7"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^3.1.0",
@@ -45,6 +47,7 @@
     "console": "truffle console",
     "networks": "truffle networks",
     "disburse": "truffle exec scripts/disburse.js",
+    "finish": "truffle exec scripts/finish.js",
     "calculateProof": "truffle exec scripts/calculateProof.js"
   },
   "husky": {

@@ -18,12 +18,19 @@
  *
  */
 
+const Web3 = require("web3");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
+require("dotenv").config();
 const infuraKey = process.env.INFURA_KEY;
+const etherscanKey = process.env.ETHERSCAN_KEY;
+const liveMnemonic = process.env.LIVE_MNEMONIC;
+const liveNetwork = process.env.LIVE_NETWORK;
 const fs = require("fs");
 const path = require("path");
 const ganacheMnemonic =
   "album wire record stuff abandon mesh museum piece bean allow refuse below";
+
+const web3 = new Web3();
 
 function walletProvider(filepath) {
   if (fs.existsSync(filepath)) {
@@ -41,11 +48,18 @@ function walletProvider(filepath) {
   }
 }
 
-const gas = 6250000;
+const gas = 2200000;
 const gasPrice = 3000000000;
 
 module.exports = {
   networks: {
+    live: {
+      provider: () => new HDWalletProvider(liveMnemonic, liveNetwork),
+      network_id: 1,
+      gas,
+      gasPrice: web3.utils.toWei("130", "gwei"),
+      from: "0x8F942ECED007bD3976927B7958B50Df126FEeCb5"
+    },
     development: {
       //host: "127.0.0.1", // Localhost (default: none)
       host: "localhost", // Localhost (default: none)
@@ -64,9 +78,9 @@ module.exports = {
     kovan: {
       confirmations: 2,
       provider: walletProvider("secrets_kovan.json"),
-      network_id: 42
-      //gas,
-      //gasPrice
+      network_id: 42,
+      // gas,
+      gasPrice
     }
   },
   mocha: {
@@ -80,5 +94,9 @@ module.exports = {
     solc: {
       version: "0.6.8" // Fetch exact version from solc-bin (default: truffle's version)
     }
-  }
+  },
+  api_keys: {
+    etherscan: etherscanKey
+  },
+  plugins: ["truffle-plugin-verify"]
 };

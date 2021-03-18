@@ -1,9 +1,9 @@
 {
   "network": "homestead",
   "chainId": 1,
-  "rpcUrl": "https://mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
+  "rpcUrl": "https://mainnet.infura.io/v3/43dd12c4245b4924b4a29cea5afa18ef",
   "addresses": {
-    "merkleRedeem": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
+    "merkleRedeem": "0x3bf5c0a496e95be000c724bc580343ff2db346cb",
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
   },
   "connectors": {
@@ -15,22 +15,14 @@
       "id": "walletconnect",
       "name": "WalletConnect",
       "options": {
-        "infuraId": "93e3393c76ed4e1f940d0266e2fdbda2"
-      }
-    },
-    "portis": {
-      "id": "portis",
-      "name": "Portis",
-      "options": {
-        "network": "mainnet",
-        "dappId": "3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe"
+        "infuraId": "7206e573a5eb45cbacb96e86c71efc32"
       }
     },
     "walletlink": {
       "id": "walletlink",
       "name": "Coinbase",
       "options": {
-        "appName": "Balancer claim",
+        "appName": "MetaGame claim",
         "darkMode": true,
         "chainId": 1,
         "ethJsonrpcUrl": "https://cloudflare-eth.com"
