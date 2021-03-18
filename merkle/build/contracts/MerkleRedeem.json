@@ -10517,6 +10517,51 @@
     "version": "0.6.8+commit.0bbfe453.Emscripten.clang"
   },
   "networks": {
+    "1": {
+      "events": {
+        "0xd8138f8a3f377c5259ca548e70e4c2de94f129f5a11036a15b69513cba2b426a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "_claimant",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "_balance",
+              "type": "uint256"
+            }
+          ],
+          "name": "Claimed",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x3bf5c0a496E95Be000C724Bc580343Ff2DB346CB",
+      "transactionHash": "0x06ee5535b7a2168a65f35e79353e394e4a66e3fb2bb1a901d2996c49448007aa"
+    },
     "42": {
       "events": {
         "0xd8138f8a3f377c5259ca548e70e4c2de94f129f5a11036a15b69513cba2b426a": {
@@ -10609,7 +10654,7 @@
     }
   },
   "schemaVersion": "3.2.3",
-  "updatedAt": "2021-03-18T01:20:04.825Z",
+  "updatedAt": "2021-03-18T05:01:15.207Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {
