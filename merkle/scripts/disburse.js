@@ -21,12 +21,5 @@ module.exports = async function(callback) {
   console.log("\n\n// TO FINISH THIS WEEK");
   console.log("let redeem\nMerkleRedeem.deployed().then(i => redeem = i);");
   console.log("let weekNum = 1 // adjust accordingly");
-  console.log(
-    "await redeem.finishWeek(weekNum, " +
-      block.timestamp +
-      ', "' +
-      block.hash +
-      '")'
-  );
   console.log('await redeem.seedAllocations(weekNum, "' + root + '")');
 };
