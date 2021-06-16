@@ -35,13 +35,13 @@
                 <div class="flex-auto">
                   <a
                     :href="
-                      `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${_week(
+                      `https://github.com/MetaFam/erc20-redeemable/blob/master/merkle/test/data/seedMerkle${_week(
                         week
-                      )}/_totals.json`
+                      )}.json`
                     "
                     target="_blank"
                   >
-                    Week {{ $n(_week(week)) }}
+                    Distribution {{ $n(_week(week)) }}
                     <Icon name="external-link" class="ml-1" />
                   </a>
                 </div>
@@ -70,13 +70,13 @@
                 <div class="flex-auto">
                   <a
                     :href="
-                      `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${_week(
+                      `https://github.com/MetaFam/erc20-redeemable/blob/master/merkle/test/data/seedMerkle${_week(
                         week
-                      )}/_totals.json`
+                      )}.json`
                     "
                     target="_blank"
                   >
-                    Week {{ $n(_week(week)) }}
+                    Distribution {{ $n(_week(week)) }}
                     <Icon name="external-link" class="ml-1" />
                   </a>
                 </div>

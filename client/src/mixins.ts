@@ -18,8 +18,7 @@ export default {
   },
   methods: {
     _week(week) {
-      const offset = config.network === 'homestead' ? 20 : 0;
-      return parseInt(week) + offset;
+      return parseInt(week);
     },
     _numeral(number, format = '(0.[00]a)') {
       return numeral(number).format(format);
