@@ -7,21 +7,20 @@
 
 ## ERC20-Redeem
 
-This project implements a smart contract that distributes token rewards to participants throughout a week-long interval.
-Admins add token allocations for each user to the contract, which then become claimable in the form of ERC20 tokens across the week, ensuring that a large distribution doesn't upset the market.
+This implements an erc20 distribution scheme in which admin publish a merkle root of a token distribution and users can claim their tokens via merkle proofs.
 
 ## Context
 
-This project was completed for Balancer as a a candidate assessment.
+Balancer has a weekly distribution of BAL tokens for liquidity providers. This process is called liquidity mining and its main objective is to distribute BAL governance tokens to stakeholders, achieving a healthy distribution in the space.  The calculation of rewards due to each liquidity provider in v1 is calculated off-chain using these scripts: [bal-mining-scripts](https://github.com/balancer-labs/bal-mining-scripts)
 
-Balancer has a weekly distribution of BAL tokens for liquidity providers. This process is called liquidity mining and its main objective is to distribute BAL governance tokens to many meaningful stakeholders, achieving a healthy distribution in the space.
+Initially, these tokens were distributed actively by Balancer Labs (disperse.app was used to send them) every Tuesday evening.   Distributing BAL with an ERC-20 mass transfer was very gas intensive.
 
-Today these tokens are distributed actively by Balancer Labs (disperse.app is used to send them) every Tuesday evening. 
+Allowing users to retrieve their own BAL reduces the overhead of the transfer of BAL tokens.
 
-The community is discussing a lock-up mechanism for most of the tokens LPs receive. Having the code ready would speed up the governance process of implementing this change.
 
-Currently BAL is distributed in a gas intensive ERC-20 mass transfer.   Allowing users to retrieve their own BAL reduces the overhead of the transfer of BAL tokens and allows additional logic to be attached to the new tokens, such as when they can be released.
+## Directory structure
 
+This repo contains a `/merkle` directory with smart contracts and a merkle tree library that powers the distribution, and `/client` that provides an interface to claiming BAL.
 
 ## User Stories
 
@@ -29,6 +28,6 @@ __Liquidity Provider__: As a balancer liquidity provider I earn tokens based on 
 
 __Balancer governance user__: As a balancer employee, I need to send users their accrued BAL based on the value of tokens in their pools.  I may want to restrict how long before a user can unlock their BAL
 
-## Future Requirements
+## Balancer v2
 
-In the future, a user's rewards may be vested over time.  This would require adding an allocation more than 0-7 days in the future (most likely for a year). 
+This method for distributing BAL will eventually be replaced with an on-chain distribution calculation in v2.  [v2 distributors](https://github.com/balancer-labs/balancer-v2-monorepo/tree/master/pkg/distributors)
