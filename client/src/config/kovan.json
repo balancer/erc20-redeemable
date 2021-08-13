@@ -7,6 +7,8 @@
     "multicall": "0x2cc8688C5f75E365aaEEb4ea8D6a480405A48D2A"
   },
   "rewardToken": "BAL",
+  "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports-kovan",
+  "snapshotUrl": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports-kovan/_current.json",
   "connectors": {
     "injected": {
       "id": "injected",

@@ -76,10 +76,9 @@ export function sleep(ms) {
 }
 
 export async function getSnapshot() {
-  const networkStr = config.chainId === 1 ? '' : '-kovan';
-
+  const url = "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/_current.json"
   const claim = await fetch(
-    `https://storageapi.fleek.co/balancer-team-bucket/balancer-claim${networkStr}/snapshot`
+    config.snapshotUrl
   );
   const res = await claim.json();
 

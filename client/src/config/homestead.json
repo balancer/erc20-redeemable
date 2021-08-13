@@ -7,6 +7,8 @@
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
   },
   "rewardToken": "BAL",
+  "snapshotUrl": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json",
+  "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports",
   "connectors": {
     "injected": {
       "id": "injected",
