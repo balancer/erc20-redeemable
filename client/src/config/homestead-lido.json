@@ -3,7 +3,7 @@
   "chainId": 1,
   "rpcUrl": "https://mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
   "addresses": {
-    "merkleRedeem": "0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809",
+    "merkleRedeem": "0x884226c9f7b7205f607922E0431419276a64CF8f",
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
   },
   "rewardToken": "LDO",
