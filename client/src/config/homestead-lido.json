@@ -1,14 +1,14 @@
 {
-  "network": "homestead",
+  "network": "homestead-lido",
   "chainId": 1,
   "rpcUrl": "https://mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
   "addresses": {
-    "merkleRedeem": "0x6d19b2bF3A36A61530909Ae65445a906D98A2Fa8",
+    "merkleRedeem": "0x884226c9f7b7205f607922E0431419276a64CF8f",
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
   },
-  "rewardToken": "BAL",
-  "snapshotUrl": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json",
-  "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports",
+  "rewardToken": "LDO",
+  "snapshotUrl": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-lido.json",
+  "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports-ldo",
   "connectors": {
     "injected": {
       "id": "injected",

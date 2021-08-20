@@ -4,7 +4,10 @@ import { hexToBytes, toWei, soliditySha3 } from 'web3-utils';
 
 // Merkle tree called with 32 byte hex values
 export class MerkleTree {
-  constructor(elements) {
+  elements: Buffer[];
+  layers: any[];
+
+  constructor(elements: string[]) {
     this.elements = elements
       .filter(el => el)
       .map(el => Buffer.from(hexToBytes(el)));
@@ -18,12 +21,12 @@ export class MerkleTree {
     this.layers = this.getLayers(this.elements);
   }
 
-  getLayers(elements) {
+  getLayers(elements: Buffer[]) {
     if (elements.length === 0) {
       return [['']];
     }
 
-    const layers = [];
+    const layers: any[][] = [];
     layers.push(elements);
 
     // Get next layer until we reach the root
@@ -34,8 +37,8 @@ export class MerkleTree {
     return layers;
   }
 
-  getNextLayer(elements) {
-    return elements.reduce((layer, el, idx, arr) => {
+  getNextLayer(elements: Buffer[]) {
+    return elements.reduce((layer: any, el: any, idx: number, arr: any[]) => {
       if (idx % 2 === 0) {
         // Hash the current element with its pair element
         layer.push(this.combinedHash(el, arr[idx + 1]));
@@ -45,7 +48,7 @@ export class MerkleTree {
     }, []);
   }
 
-  combinedHash(first, second) {
+  combinedHash(first: string, second: string): Buffer | string {
     if (!first) {
       return second;
     }
@@ -64,7 +67,7 @@ export class MerkleTree {
     return bufferToHex(this.getRoot());
   }
 
-  getProof(el) {
+  getProof(el: Buffer) {
     let idx = this.bufIndexOf(el, this.elements);
 
     if (idx === -1) {
@@ -85,7 +88,7 @@ export class MerkleTree {
   }
 
   // external call - convert to buffer
-  getHexProof(_el) {
+  getHexProof(_el: any) {
     const el = Buffer.from(hexToBytes(_el));
 
     const proof = this.getProof(el);
@@ -93,7 +96,7 @@ export class MerkleTree {
     return this.bufArrToHexArr(proof);
   }
 
-  getPairElement(idx, layer) {
+  getPairElement(idx: number, layer: any) {
     const pairIdx = idx % 2 === 0 ? idx + 1 : idx - 1;
 
     if (pairIdx < layer.length) {
@@ -103,14 +106,14 @@ export class MerkleTree {
     }
   }
 
-  bufIndexOf(el, arr) {
+  bufIndexOf(el: Buffer | string, arr: Buffer[]) {
     let hash;
 
     // Convert element to 32 byte hash if it is not one already
     if (el.length !== 32 || !Buffer.isBuffer(el)) {
-      hash = keccakFromString(el);
+      hash = keccakFromString(el as string);
     } else {
-      hash = el;
+      hash = el as Buffer;
     }
 
     for (let i = 0; i < arr.length; i++) {
@@ -122,31 +125,29 @@ export class MerkleTree {
     return -1;
   }
 
-  bufDedup(elements) {
-    return elements.filter((el, idx) => {
+  bufDedup(elements: Buffer[]) {
+    return elements.filter((el, idx: number) => {
       return idx === 0 || !elements[idx - 1].equals(el);
     });
   }
 
-  bufArrToHexArr(arr) {
+  bufArrToHexArr(arr: Buffer[]) {
     if (arr.some(el => !Buffer.isBuffer(el))) {
       throw new Error('Array is not an array of buffers');
     }
 
-    return arr.map(el => '0x' + el.toString('hex'));
+    return arr.map((el: Buffer) => '0x' + el.toString('hex'));
   }
 
-  sortAndConcat(...args) {
+  sortAndConcat(...args: any[]) {
     return Buffer.concat([...args].sort(Buffer.compare));
   }
 }
 
 export function loadTree(balances) {
-  const elements = [];
-  Object.keys(balances).forEach(address => {
+  const elements = Object.keys(balances).map(address => {
     const balance = toWei(balances[address]);
-    const leaf = soliditySha3(address, balance);
-    elements.push(leaf);
+    return soliditySha3(address, balance) as string;
   });
   return new MerkleTree(elements);
 }

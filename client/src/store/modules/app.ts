@@ -73,7 +73,7 @@ const actions = {
       const merkleTree = loadTree(state.reports[week]);
 
       // Get merkle root
-      console.log(week, merkleTree.getHexRoot());
+      //console.log(week, merkleTree.getHexRoot());
 
       const proof = merkleTree.getHexProof(
         soliditySha3(address, toWei(claimBalance))
@@ -88,10 +88,13 @@ const actions = {
         'claimWeeks',
         [address, claims]
       ];
-      console.log('Claim payload', claims);
+      //console.log('Claim payload', claims);
       const tx = await dispatch('sendTransaction', params);
       const amountStr = numeral(totalClaim).format('(0.[00]a)');
-      dispatch('notify', ['green', `You've just claimed ${amountStr} BAL!`]);
+      dispatch('notify', [
+        'green',
+        `You've just claimed ${amountStr} ${config.rewardToken}!`
+      ]);
       commit('CLAIM_WEEKS_SUCCESS');
       return tx;
     } catch (e) {

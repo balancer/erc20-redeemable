@@ -24,7 +24,12 @@
               <Icon name="external-link" class="ml-1" />
             </p>
           </a>
-          <Block :slim="true" title="Pending BAL">
+          <Block
+            :slim="true"
+            :title="
+              $t('rewardToken.pending', { rewardToken: config.rewardToken })
+            "
+          >
             <div class="overflow-hidden">
               <div
                 v-for="(dist, week, i) in unclaimed"
@@ -35,7 +40,7 @@
                 <div class="flex-auto">
                   <a
                     :href="
-                      `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${_week(
+                      `${config.reportsUrl}/${_week(
                         week
                       )}/_totals.json`
                     "
@@ -45,20 +50,22 @@
                     <Icon name="external-link" class="ml-1" />
                   </a>
                 </div>
-                <div>{{ $n(dist) }} BAL</div>
+                <div>{{ $n(dist) }} {{ config.rewardToken }}</div>
               </div>
               <p
                 v-if="Object.keys(unclaimed).length === 0"
                 class="p-4 m-0 d-block"
               >
-                There isn't any pending BAL here.
+                There isn't any pending {{ config.rewardToken }} here.
               </p>
             </div>
           </Block>
           <Block
             v-if="Object.keys(claimed).length > 0"
             :slim="true"
-            title="Claimed BAL"
+            :title="
+              $t('rewardToken.claimed', { rewardToken: config.rewardToken })
+            "
           >
             <div class="overflow-hidden">
               <div
@@ -80,16 +87,22 @@
                     <Icon name="external-link" class="ml-1" />
                   </a>
                 </div>
-                <div>{{ $n(dist) }} BAL</div>
+                <div>{{ $n(dist) }} {{ config.rewardToken }}</div>
               </div>
             </div>
           </Block>
         </div>
         <div class="col-12 col-lg-4 float-left">
-          <Block title="Total pending BAL">
+          <Block
+            :title="
+              $t('rewardToken.totalPending', {
+                rewardToken: config.rewardToken
+              })
+            "
+          >
             <div class="mb-2">
               <UiButton class="width-full mb-2">
-                {{ $n(totalUnclaimed) }} BAL
+                {{ $n(totalUnclaimed) }} {{ config.rewardToken }}
               </UiButton>
             </div>
             <UiButton

@@ -11,6 +11,11 @@ export default new VueI18n({
     en: {
       messages: {
         EMPTY_STATE: 'No results found'
+      },
+      rewardToken: {
+        pending: 'Pending {rewardToken}',
+        totalPending: 'Total pending {rewardToken}',
+        claimed: 'Claimed {rewardToken}'
       }
     }
   },
