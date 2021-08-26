@@ -79,7 +79,7 @@ export async function getSnapshot() {
   const networkStr = config.chainId === 1 ? '' : '-kovan';
 
   const claim = await fetch(
-    `https://storageapi.fleek.co/metafam-team-bucket/seed-claim${networkStr}/snapshot.json`
+    `https://storageapi.fleek.co/hammadj-team-bucket/seed-claim${networkStr}/snapshot.json`
   );
   const res = await claim.json();
 
