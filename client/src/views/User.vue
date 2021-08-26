@@ -119,6 +119,7 @@ export default {
       loaded: false,
       submitLoading: false,
       unclaimedWeeks: [],
+      allWeeks: [],
       txHash: false
     };
   },
@@ -151,11 +152,16 @@ export default {
   async created() {
     this.loading = true;
     await this.getUnclaimedWeeks();
-    await this.loadReports(this.unclaimedWeeks);
+    await this.getAllWeeks();
+    await this.loadReports(this.allWeeks);
     this.loading = false;
   },
   methods: {
     ...mapActions(['claimWeeks', 'claimStatus', 'loadReports']),
+    async getAllWeeks() {
+      const claimStatus = await this.claimStatus(this.address);
+      this.allWeeks = Object.keys(claimStatus);
+    },
     async getUnclaimedWeeks() {
       const claimStatus = await this.claimStatus(this.address);
       console.log('Claim status', claimStatus);
