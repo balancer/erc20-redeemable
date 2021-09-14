@@ -3,7 +3,7 @@
   "chainId": 42161,
   "rpcUrl": "https://arbitrum-mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
   "addresses": {
-    "merkleRedeem": "0xTODO",
+    "merkleRedeem": "0x6bd0B17713aaa29A2d7c9A39dDc120114f9fD809",
     "multicall": "0x269ff446d9892c9e19082564df3f5e8741e190a1"
   },
   "rewardToken": "BAL",
