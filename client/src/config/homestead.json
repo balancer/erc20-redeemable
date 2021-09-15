@@ -9,6 +9,7 @@
   "rewardToken": "BAL",
   "snapshotUrl": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current.json",
   "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports",
+  "blockExplorerUrl": "https://etherscan.io",
   "connectors": {
     "injected": {
       "id": "injected",

@@ -22,9 +22,9 @@ export function clone(item) {
   return JSON.parse(JSON.stringify(item));
 }
 
-export function etherscanLink(str: string, type = 'address'): string {
-  const network = config.network === 'homestead' ? '' : `${config.network}.`;
-  return `https://${network}etherscan.io/${type}/${str}`;
+// assumes etherscan type url structure (ie arbiscan uses the same url structure)
+export function blockExplorerLink(str: string, type = 'address'): string {
+  return `${config.blockExplorerUrl}/${type}/${str}`;
 }
 
 export function lsSet(key: string, value: any) {
