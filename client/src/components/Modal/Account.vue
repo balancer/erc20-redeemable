@@ -26,7 +26,7 @@
       <h3 class="m-4 mb-0 text-center">Account</h3>
       <div v-if="web3.account" class="m-4">
         <a
-          :href="_etherscanLink(web3.account)"
+          :href="_blockExplorerLink(web3.account)"
           target="_blank"
           class="mb-2 d-block"
         >

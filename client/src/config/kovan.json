@@ -9,6 +9,7 @@
   "rewardToken": "BAL",
   "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports-kovan",
   "snapshotUrl": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports-kovan/_current.json",
+  "blockExplorerUrl": "https://kovan.etherscan.io",
   "connectors": {
     "injected": {
       "id": "injected",

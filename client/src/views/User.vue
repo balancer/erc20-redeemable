@@ -15,7 +15,7 @@
           </div>
           <a
             target="_blank"
-            :href="_etherscanLink(txHash, 'tx')"
+            :href="_blockExplorerLink(txHash, 'tx')"
             v-if="txHash"
             class="p-4 bg-green text-white d-block rounded-0 rounded-md-2 mb-4 overflow-hidden"
           >
