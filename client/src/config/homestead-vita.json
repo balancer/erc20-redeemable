@@ -3,7 +3,7 @@
   "chainId": 1,
   "rpcUrl": "https://mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
   "addresses": {
-    "merkleRedeem": "0xTODO",
+    "merkleRedeem": "0x575bfF0ACa7638C573bc57Bb7C91b5bdfE2462C8",
     "multicall": "0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441"
   },
   "rewardToken": "VITA",
