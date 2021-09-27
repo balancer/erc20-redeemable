@@ -21,7 +21,6 @@
 const Web3 = require("web3");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 require("dotenv").config();
-const infuraKey = process.env.INFURA_KEY;
 const etherscanKey = process.env.ETHERSCAN_KEY;
 const liveMnemonic = process.env.LIVE_MNEMONIC;
 const liveNetwork = process.env.LIVE_NETWORK;
