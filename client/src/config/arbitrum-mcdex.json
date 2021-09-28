@@ -3,7 +3,7 @@
   "chainId": 42161,
   "rpcUrl": "https://arbitrum-mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
   "addresses": {
-    "merkleRedeem": "0xTODO",
+    "merkleRedeem": "0xC6bD2497332d24094eC16a7261eec5C412B5a2C1",
     "multicall": "0x269ff446d9892c9e19082564df3f5e8741e190a1"
   },
   "rewardToken": "MCB",
