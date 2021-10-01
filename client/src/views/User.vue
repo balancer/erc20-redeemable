@@ -42,7 +42,7 @@
                     :href="
                       `${config.reportsUrl}/${_week(
                         week
-                      )}/_totals.json`
+                      )}/${config.reportFilename}`
                     "
                     target="_blank"
                   >
@@ -79,7 +79,7 @@
                     :href="
                       `${config.reportsUrl}/${_week(
                         week
-                      )}/_totals.json`
+                      )}/${config.reportFilename}`
                     "
                     target="_blank"
                   >
