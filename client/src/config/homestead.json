@@ -41,5 +41,6 @@
       }
     }
   },
-  "offset": 20
+  "offset": 20,
+  "reportFilename": "_totals.json"
 }
