@@ -40,5 +40,6 @@
         "ethJsonrpcUrl": "https://eth-kovan.alchemyapi.io/v2/C467LJc7Aa761LLxlcxXvhIG9HzDTtKw"
       }
     }
-  }
+  },
+  "offset": 0
 }
