@@ -8,7 +8,7 @@
   },
   "rewardToken": "LDO",
   "snapshotUrl": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-lido.json",
-  "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports-ldo",
+  "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports",
   "blockExplorerUrl": "https://etherscan.io",
   "connectors": {
     "injected": {
