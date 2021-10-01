@@ -77,7 +77,7 @@
                 <div class="flex-auto">
                   <a
                     :href="
-                      `https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports/${_week(
+                      `${config.reportsUrl}/${_week(
                         week
                       )}/_totals.json`
                     "
