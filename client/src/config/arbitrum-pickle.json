@@ -1,0 +1,46 @@
+{
+  "network": "arbitrum-pickle",
+  "chainId": 42161,
+  "rpcUrl": "https://arbitrum-mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
+  "addresses": {
+    "merkleRedeem": "0xTODO",
+    "multicall": "0x269ff446d9892c9e19082564df3f5e8741e190a1"
+  },
+  "rewardToken": "PICKLE",
+  "snapshotUrl": "https://raw.githubusercontent.com/balancer-labs/bal-mining-scripts/master/reports/_current-pickle-arbitrum.json",
+  "reportsUrl": "https://github.com/balancer-labs/bal-mining-scripts/blob/master/reports",
+  "blockExplorerUrl": "https://arbiscan.io",
+  "connectors": {
+    "injected": {
+      "id": "injected",
+      "name": "MetaMask"
+    },
+    "walletconnect": {
+      "id": "walletconnect",
+      "name": "WalletConnect",
+      "options": {
+        "infuraId": "93e3393c76ed4e1f940d0266e2fdbda2"
+      }
+    },
+    "portis": {
+      "id": "portis",
+      "name": "Portis",
+      "options": {
+        "network": "arbitrum",
+        "dappId": "3f1c3cfc-7dd5-4e8a-aa03-71ff7396d9fe"
+      }
+    },
+    "walletlink": {
+      "id": "walletlink",
+      "name": "Coinbase",
+      "options": {
+        "appName": "Balancer claim",
+        "darkMode": true,
+        "chainId": 1,
+        "ethJsonrpcUrl": "https://cloudflare-eth.com"
+      }
+    }
+  },
+  "offset": 69,
+  "reportFilename": "__arbitrum_0x965772e0e9c84b6f359c8597c891108dcf1c5b1a.json"
+}
