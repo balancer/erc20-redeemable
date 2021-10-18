@@ -12,6 +12,7 @@ const state = {
   loading: false,
   snapshot: {},
   reports: {},
+  firstWeek: 1,
   latestWeek: 0,
   latestReport: {}
 };
@@ -37,6 +38,17 @@ const mutations = {
     console.debug('CLAIM_WEEKS_FAILURE', payload)
 };
 
+interface ClaimWeeksArgs {
+  address: string;
+  weeks: string[];
+}
+
+
+interface Report {
+  [address: string]: number;
+}
+
+
 const actions = {
   init: async ({ commit, dispatch }) => {
     commit('SET', { loading: true });
@@ -45,11 +57,13 @@ const actions = {
     const snapshot = await getSnapshot();
     let latestWeek = 0;
     let latestReport = {};
-    const reports = {};
+    const reports: Record<number, Report> = {};
     if (Object.keys(snapshot).length > 0) {
-      const result: any = Object.entries(snapshot).slice(-1);
-      latestWeek = result[0][0];
-      const latestWeekIpfsHash = result[0][1];
+      latestWeek = typeof config.latestWeek != 'undefined' ?
+        config.latestWeek :
+        Math.max(...Object.keys(snapshot).map(numStr => parseInt(numStr)));
+
+      const latestWeekIpfsHash = snapshot[latestWeek.toString()];
       latestReport = await ipfs.get(latestWeekIpfsHash);
       reports[latestWeek] = latestReport;
     }
@@ -65,7 +79,7 @@ const actions = {
   loading: ({ commit }, payload) => {
     commit('SET', { loading: payload });
   },
-  claimWeeks: async ({ commit, dispatch }, { address, weeks }) => {
+  claimWeeks: async ({ commit, dispatch }, { address, weeks }: ClaimWeeksArgs) => {
     commit('CLAIM_WEEKS_REQUEST');
     let totalClaim = 0;
     const claims = weeks.map(week => {
@@ -105,14 +119,15 @@ const actions = {
     }
   },
   claimStatus: async ({ commit, dispatch }, address) => {
-    commit('GET_CLAIM_STATUS_SUCCESS');
+    commit('GET_CLAIM_STATUS_REQUEST');
     try {
       let res = await dispatch('call', [
         'MerkleRedeem',
         config.addresses.merkleRedeem,
         'claimStatus',
-        [address.toLowerCase(), 1, state.latestWeek]
+        [address.toLowerCase(), state.firstWeek, state.latestWeek]
       ]);
+      // correct 0 index to 1
       res = Object.fromEntries(res.map((status, i) => [i + 1, status]));
       commit('GET_CLAIM_STATUS_SUCCESS');
       return res;

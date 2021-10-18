@@ -172,11 +172,11 @@ const actions = {
             await dispatch('loadWeb3');
           }
         });
-        provider.on('close', async () => {
+        provider.on('disconnect', async () => {
           commit('HANDLE_CLOSE');
           await dispatch('logout');
         });
-        provider.on('networkChanged', async () => {
+        provider.on('chainChanged', async () => {
           commit('HANDLE_NETWORK_CHANGED');
           await dispatch('logout');
           await dispatch('login');

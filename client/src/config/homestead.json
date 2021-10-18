@@ -42,5 +42,6 @@
     }
   },
   "offset": 20,
+  "latestWeek": 51,
   "reportFilename": "_totals.json"
 }
