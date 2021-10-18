@@ -14,6 +14,7 @@ const state = {
   reports: {},
   firstWeek: 1,
   latestWeek: 0,
+  migratedToOrchard: false,
   latestReport: {}
 };
 
@@ -57,11 +58,16 @@ const actions = {
     const snapshot = await getSnapshot();
     let latestWeek = 0;
     let latestReport = {};
+    let migratedToOrchard = false
     const reports: Record<number, Report> = {};
+    const latestWeekInSnapshot = Math.max(...Object.keys(snapshot).map(numStr => parseInt(numStr)))
     if (Object.keys(snapshot).length > 0) {
-      latestWeek = typeof config.latestWeek != 'undefined' ?
+      const hasConfig = typeof config.latestWeek != 'undefined';
+      latestWeek = hasConfig ?
         config.latestWeek :
-        Math.max(...Object.keys(snapshot).map(numStr => parseInt(numStr)));
+        latestWeekInSnapshot;
+
+      migratedToOrchard = hasConfig && latestWeekInSnapshot > config.latestWeek;
 
       const latestWeekIpfsHash = snapshot[latestWeek.toString()];
       latestReport = await ipfs.get(latestWeekIpfsHash);
@@ -73,6 +79,7 @@ const actions = {
       snapshot,
       latestWeek,
       latestReport,
+      migratedToOrchard,
       reports
     });
   },
