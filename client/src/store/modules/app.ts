@@ -135,12 +135,13 @@ const actions = {
         [address.toLowerCase(), state.firstWeek, state.latestWeek]
       ]);
       // correct 0 index to 1
-      res = Object.fromEntries(res.map(
-        (status, i) => {
-          const omitted = (config.omit || []).includes(i+1);
-          return [i + 1, status, omitted]
-        }
-      ));
+      res = Object.fromEntries(
+        res.map(
+          (status, i) => [i + 1, status]
+        ).filter(
+          ([week, status]) => !(config.omit || []).includes(week)
+        )
+      );
       commit('GET_CLAIM_STATUS_SUCCESS');
       return res;
     } catch (e) {
