@@ -173,7 +173,7 @@ export default {
       const claimStatus = await this.claimStatus(this.address);
       console.log('Claim status', claimStatus);
       this.unclaimedWeeks = Object.entries(claimStatus)
-        .filter(status => !status[1] && !status[2])
+        .filter(status => !status[1])
         .map(status => status[0]);
     },
     async handleSubmit() {
