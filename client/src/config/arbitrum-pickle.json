@@ -3,7 +3,11 @@
   "chainId": 42161,
   "rpcUrl": "https://arbitrum-mainnet.infura.io/v3/7a887133ccb042cf8547e30a53f57169",
   "addresses": {
+<<<<<<< HEAD
     "merkleRedeem": "0xe3Fb4f33FDb4ECC874a842c5ca2Ee6a2E547328c",
+=======
+    "merkleRedeem": "0xTODO",
+>>>>>>> origin/arbitrum-pickle
     "multicall": "0x269ff446d9892c9e19082564df3f5e8741e190a1"
   },
   "rewardToken": "PICKLE",
@@ -42,6 +46,9 @@
     }
   },
   "offset": 69,
+<<<<<<< HEAD
   "latestWeek": 3,
+=======
+>>>>>>> origin/arbitrum-pickle
   "reportFilename": "__arbitrum_0x965772e0e9c84b6f359c8597c891108dcf1c5b1a.json"
 }
