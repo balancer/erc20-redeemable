@@ -1,36 +1,26 @@
-version: 2
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  build:
+  say-hello:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
-      - image: circleci/node:10.13.0
+      - image: cimg/base:stable
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "~/project/merkle/package.json" }}
-          - v1-dependencies-
-      - run: cd ~/project/merkle && yarn
-      - save_cache:
-          paths:
-            - merkle/node_modules
-          key: v1-dependencies-{{ checksum "~/project/merkle/package.json" }}
-  test:
-    docker:
-      - image: circleci/node:10.13.0
-      - image: trufflesuite/ganache-cli:v6.10.1
-        command: ganache-cli --mnemonic "album wire record stuff abandon mesh museum piece bean allow refuse below"
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies
-      - run: cd ~/project/merkle && npm run test
+      - run:
+          name: "Say hello"
+          command: "echo Hello, World!"
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  version: 2
-  build_test:
+  say-hello-workflow:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - say-hello
