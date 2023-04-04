@@ -16,33 +16,30 @@ contract("MerkleRedeem", accounts => {
   let tbal;
   let TBAL;
 
+  let tbal2;
+  let TBAL2;
+
   const MAX = utils.toTwosComplement(-1);
 
   // these are deterministic because accounts are deterministic for the ganache mnemonic
   const endingBlockHash =
     "0x76e2419510611ed9dceb203644e997aae76fb195d6420f8bee64368b14303312";
-  const expectedOffsetSeconds = [
-    581200,
-    171952,
-    63845,
-    503077,
-    284922,
-    44468,
-    25715,
-    559291,
-    98173,
-    588157
-  ];
 
   beforeEach(async () => {
     tbal = await TToken.new("Test Bal", "TBAL", 18);
     await tbal.mint(admin, utils.toWei("1450000"));
     TBAL = tbal.address;
 
-    redeem = await Redeem.new(TBAL);
+    // TODO add tests using a second token
+    tbal2 = await TToken.new("Test Bal 2", "TBAL", 18);
+    await tbal2.mint(admin, utils.toWei("1450000"));
+    TBAL2 = tbal2.address;
+
+    redeem = await Redeem.new([TBAL, TBAL2]);
     REDEEM = redeem.address;
 
     await tbal.approve(REDEEM, MAX);
+    await tbal2.approve(REDEEM, MAX);
   });
 
   it("stores an allocation", async () => {
@@ -53,11 +50,17 @@ contract("MerkleRedeem", accounts => {
     const merkleTree = new MerkleTree(elements);
     const root = merkleTree.getHexRoot();
 
-    await redeem.seedAllocations(1, root, utils.toWei("145000"));
+    await redeem.seedAllocations(TBAL, 1, root, utils.toWei("145000"));
 
     const proof = merkleTree.getHexProof(elements[0]);
 
-    let result = await redeem.verifyClaim(accounts[0], 1, claimBalance, proof);
+    let result = await redeem.verifyClaim(
+      accounts[0],
+      TBAL,
+      1,
+      claimBalance,
+      proof
+    );
     assert(result, "user should have an allocation");
   });
 
@@ -69,7 +72,7 @@ contract("MerkleRedeem", accounts => {
     const merkleTree = new MerkleTree(elements);
     const root = merkleTree.getHexRoot();
 
-    await redeem.seedAllocations(1, root, utils.toWei("145000"));
+    await redeem.seedAllocations(TBAL, 1, root, utils.toWei("145000"));
 
     // construct tree to attempt to override the allocation
     const elements2 = [
@@ -80,7 +83,7 @@ contract("MerkleRedeem", accounts => {
     const root2 = merkleTree.getHexRoot();
 
     await truffleAssert.reverts(
-      redeem.seedAllocations(1, root2, utils.toWei("145000"))
+      redeem.seedAllocations(TBAL, 1, root2, utils.toWei("145000"))
     );
   });
 
@@ -97,11 +100,12 @@ contract("MerkleRedeem", accounts => {
     const merkleTree = new MerkleTree(elements);
     const root = merkleTree.getHexRoot();
 
-    await redeem.seedAllocations(1, root, utils.toWei("145000"));
+    await redeem.seedAllocations(TBAL, 1, root, utils.toWei("145000"));
 
     let proof0 = merkleTree.getHexProof(elements[0]);
     let result = await redeem.verifyClaim(
       accounts[0],
+      TBAL,
       1,
       claimBalance0,
       proof0
@@ -109,7 +113,13 @@ contract("MerkleRedeem", accounts => {
     assert(result, "account 0 should have an allocation");
 
     let proof1 = merkleTree.getHexProof(elements[1]);
-    result = await redeem.verifyClaim(accounts[1], 1, claimBalance1, proof1);
+    result = await redeem.verifyClaim(
+      accounts[1],
+      TBAL,
+      1,
+      claimBalance1,
+      proof1
+    );
     assert(result, "account 1 should have an allocation");
   });
 
@@ -129,7 +139,7 @@ contract("MerkleRedeem", accounts => {
 
       const merkleProof = merkleTree.getHexProof(elements[0]);
       await truffleAssert.reverts(
-        redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
+        redeem.claimWeek(accounts[1], TBAL, 1, claimedBalance, merkleProof, {
           from: accounts[1]
         })
       );
@@ -148,20 +158,27 @@ contract("MerkleRedeem", accounts => {
       let lastBlockHash =
         "0x7c1b1e7c2eaddafdf52250cba9679e5b30014a9d86a0e2af17ec4cee24a5fc80";
 
-      await redeem.seedAllocations(1, root, utils.toWei("145000"));
+      await redeem.seedAllocations(TBAL, 1, root, utils.toWei("145000"));
     });
 
     it("Allows the user to claimWeek", async () => {
       let claimedBalance = utils.toWei("1000");
       const merkleProof = merkleTree.getHexProof(elements[0]);
-      await redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
-        from: accounts[1]
-      });
+      await redeem.claimWeek(
+        accounts[1],
+        TBAL,
+        1,
+        claimedBalance,
+        merkleProof,
+        {
+          from: accounts[1]
+        }
+      );
 
       let result = await tbal.balanceOf(accounts[1]);
       assert(result == claimedBalance, "user should have an allocation");
 
-      result = await redeem.claimed(1, accounts[1]);
+      result = await redeem.claimed(TBAL, 1, accounts[1]);
       assert(result == true, "claim should be marked as claimed");
     });
 
@@ -171,7 +188,7 @@ contract("MerkleRedeem", accounts => {
       const merkleProof = merkleTree.getHexProof(elements[0]);
 
       await truffleAssert.reverts(
-        redeem.claimWeek(accounts[2], 1, claimedBalance, merkleProof, {
+        redeem.claimWeek(accounts[2], TBAL, 1, claimedBalance, merkleProof, {
           from: accounts[2]
         })
       );
@@ -182,7 +199,7 @@ contract("MerkleRedeem", accounts => {
       let claimedBalance = utils.toWei("666");
       const merkleProof = merkleTree.getHexProof(elements[0]);
       await truffleAssert.reverts(
-        redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
+        redeem.claimWeek(accounts[1], TBAL, 1, claimedBalance, merkleProof, {
           from: accounts[1]
         })
       );
@@ -193,12 +210,19 @@ contract("MerkleRedeem", accounts => {
       let claimedBalance = utils.toWei("1000");
       const merkleProof = merkleTree.getHexProof(elements[0]);
 
-      await redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
-        from: accounts[1]
-      });
+      await redeem.claimWeek(
+        accounts[1],
+        TBAL,
+        1,
+        claimedBalance,
+        merkleProof,
+        {
+          from: accounts[1]
+        }
+      );
 
       await truffleAssert.reverts(
-        redeem.claimWeek(accounts[1], 1, claimedBalance, merkleProof, {
+        redeem.claimWeek(accounts[1], TBAL, 1, claimedBalance, merkleProof, {
           from: accounts[1]
         })
       );
@@ -219,13 +243,13 @@ contract("MerkleRedeem", accounts => {
     beforeEach(async () => {
       let lastBlock = await web3.eth.getBlock("latest");
 
-      await redeem.seedAllocations(1, root1, utils.toWei("145000"));
+      await redeem.seedAllocations(TBAL, 1, root1, utils.toWei("145000"));
 
       await increaseTime(7);
       lastBlock = await web3.eth.getBlock("latest");
       let lastBlockHash =
         "0xb6801f31f93d990dfe65d67d3479c3853d5fafd7a7f2b8fad9e68084d8d409e0"; // set this manually to simplify testing
-      await redeem.seedAllocations(2, root2, utils.toWei("145000"));
+      await redeem.seedAllocations(TBAL, 2, root2, utils.toWei("145000"));
     });
 
     it("Allows the user to claim once the time has past", async () => {
@@ -235,12 +259,12 @@ contract("MerkleRedeem", accounts => {
       let claimedBalance2 = utils.toWei("1234");
 
       const proof1 = merkleTree1.getHexProof(elements1[0]);
-      await redeem.claimWeek(accounts[1], 1, claimedBalance1, proof1, {
+      await redeem.claimWeek(accounts[1], TBAL, 1, claimedBalance1, proof1, {
         from: accounts[1]
       });
 
       const proof2 = merkleTree2.getHexProof(elements2[0]);
-      await redeem.claimWeek(accounts[1], 2, claimedBalance2, proof2, {
+      await redeem.claimWeek(accounts[1], TBAL, 2, claimedBalance2, proof2, {
         from: accounts[1]
       });
 
@@ -262,6 +286,7 @@ contract("MerkleRedeem", accounts => {
 
       await redeem.claimWeeks(
         accounts[1],
+        TBAL,
         [[1, claimedBalance1, proof1], [2, claimedBalance2, proof2]],
         { from: accounts[1] }
       );
@@ -275,7 +300,7 @@ contract("MerkleRedeem", accounts => {
 
     it("Returns an array of week claims", async () => {
       let expectedResult = [false, false];
-      let result = await redeem.claimStatus(accounts[1], 1, 2);
+      let result = await redeem.claimStatus(accounts[1], TBAL, 1, 2);
       assert.deepEqual(
         result,
         expectedResult,
@@ -285,12 +310,17 @@ contract("MerkleRedeem", accounts => {
       const proof1 = merkleTree1.getHexProof(elements1[0]);
 
       await increaseTime(8);
-      await redeem.claimWeeks(accounts[1], [[1, claimedBalance1, proof1]], {
-        from: accounts[1]
-      });
+      await redeem.claimWeeks(
+        accounts[1],
+        TBAL,
+        [[1, claimedBalance1, proof1]],
+        {
+          from: accounts[1]
+        }
+      );
 
       expectedResult = [true, false];
-      result = await redeem.claimStatus(accounts[1], 1, 2);
+      result = await redeem.claimStatus(accounts[1], TBAL, 1, 2);
       assert.deepEqual(
         result,
         expectedResult,
@@ -300,7 +330,7 @@ contract("MerkleRedeem", accounts => {
 
     it("Returns an array of merkle roots", async () => {
       let expectedResult = [root1, root2];
-      let result = await redeem.merkleRoots(1, 2);
+      let result = await redeem.merkleRoots(TBAL, 1, 2);
       assert.deepEqual(
         result,
         expectedResult,
