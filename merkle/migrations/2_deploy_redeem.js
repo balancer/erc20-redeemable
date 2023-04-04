@@ -9,7 +9,7 @@ module.exports = (deployer, network, accounts) => {
     const token = await TToken.deployed();
     await token.mint(admin, utils.toWei("145000"));
 
-    await deployer.deploy(Redeem, token.address);
+    await deployer.deploy(Redeem, [token.address]);
     const redeem = await Redeem.deployed();
 
     await token.transfer(redeem.address, utils.toWei("20000"));
